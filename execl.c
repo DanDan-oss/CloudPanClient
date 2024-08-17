@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
     if(-1 == pipe(pipe_fd))
     {
-        LOG("execl", "fdfsdemo", "创建匿名管道失败");
+        LOG("fdfs_client", "创建匿名管道失败");
         return 0;
     }
 
