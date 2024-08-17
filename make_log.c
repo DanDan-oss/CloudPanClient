@@ -78,26 +78,16 @@ int make_path(char *path, char *proc_name)
 		if(mkdir(top_dir, 0777) == -1) {
 			fprintf(stderr, "create %s failed!\n", top_dir);	
 		} else if(mkdir(second_dir, 0777) == -1) {
-			fprintf(stderr, "create %s failed!\n", second_dir);
-		} else if(mkdir(third_dir, 0777) == -1) {
-			fprintf(stderr, "create %s failed!\n", third_dir);                                                   
+			fprintf(stderr, "create %s failed!\n", second_dir);                                               
         } else if(mkdir(d_dir, 0777) == -1) {                                                             
             fprintf(stderr, "create %s failed!\n", d_dir);                                                     
         }          	
 	} else if(access(second_dir, 0) == -1) {
 		if(mkdir(second_dir, 0777) == -1) {
 			fprintf(stderr, "create %s failed!\n", second_dir);
-		} else if(mkdir(third_dir, 0777) == -1) {
-			fprintf(stderr, "create %s failed!\n", third_dir);
         } else if(mkdir(d_dir, 0777) == -1) {
             fprintf(stderr, "create %s failed!\n", d_dir);
         }
-	} else if(access(third_dir, 0) == -1) {
-		if(mkdir(third_dir, 0777) == -1) {
-			fprintf(stderr, "create %s failed!\n", third_dir);
-		} else if(mkdir(d_dir, 0777) == -1) {
-			fprintf(stderr, "create %s failed!\n", d_dir);
-		} 
 	} else if (access(d_dir, 0) == -1) {
                 if(mkdir(d_dir, 0777)) {
 			fprintf(stderr, "create %s failed!\n", d_dir);
