@@ -1,0 +1,7 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "fdfs_api.h": "c",
+        "make_log.h": "c"
+    }
+}
