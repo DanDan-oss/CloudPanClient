@@ -16,7 +16,6 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 	int result = 0;
 	int store_path_index = 0;
 	ConnectionInfo storageServer = {0};
-
 	// 通过客户端文件初始化数据
 	if ((result=fdfs_client_init(conf_filename)) != 0)
 	{
@@ -27,6 +26,8 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 	pTrackerServer = tracker_get_connection();
 	if (pTrackerServer == NULL)
 	{
+		printf("et tracker_get_connection fail\n");
+		LOG("fdfs_client", " get tracker_get_connection fail ");
 		fdfs_client_destroy();
 		return errno != 0 ? errno : ECONNREFUSED;
 	}
