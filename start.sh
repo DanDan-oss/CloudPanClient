@@ -9,7 +9,7 @@ function init_env
     export LOCAL_FDFS_FDSTDFS_CONF="/etc/fdfs/mod_fastdfs.conf"
     export LOCAL_FDFS_TRACKER_CONF="/etc/fdfs/tracker.conf"
     export LOCAL_NGINX_CONF="/home/build_tools/nginx/conf/nginx.conf"
-    export CLOUDPAN_PATH="/home/CodeHub/CloudPan"
+    export CLOUDPAN_PATH="/home/CodeHub/CloudPan/CloudPanClient/"
     
     echo "start env ..."
     echo "current ip address = ${LOCAL_ADDR} ..."
@@ -38,8 +38,8 @@ function main
         echo "start"
         fdfs_trackerd /etc/fdfs/tracker.conf start
         fdfs_storaged /etc/fdfs/storage.conf start
-        cd ${CLOUDPAN_PATH}/CloudPanServer && make clean && make
-        spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/CloudPanServer/fastcgi.exe
+        cd ${CLOUDPAN_PATH}/code/http_server && make clean && make
+        spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/fastcgi.exe
         spawn-fcgi -a 127.0.0.1 -p 7787 -f /home/build_tools/fcgi2/examples/echo
         nginx
         ;;
