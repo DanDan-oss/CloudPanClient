@@ -10,7 +10,7 @@ function init_env
     export LOCAL_FDFS_FDSTDFS_CONF="/etc/fdfs/mod_fastdfs.conf"
     export LOCAL_FDFS_TRACKER_CONF="/etc/fdfs/tracker.conf"
     export LOCAL_NGINX_CONF="/home/build_tools/nginx/conf/nginx.conf"
-    export CLOUDPAN_PATH="/home/CodeHub/CloudPan/CloudPanClient/"
+    export CLOUDPAN_PATH="/home/CodeHub/CloudPan/CloudPanClient"
 }
 
 function build_cpp
@@ -39,8 +39,10 @@ function fdfs_srever_stop
     fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} stop
     fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} stop
     nginx -s stop
-    kill -9 $(ps aux | grep "fastcgi.exe" | grep -v grep | awk '{print $2}')
-    kill -9 $(ps aux | grep "echo" | grep -v grep | awk '{print $2}')
+    fastcgi_pid=$(ps aux | grep "fastcgi.exe" | grep -v grep | awk '{print $2}')
+    echo_pid=$(ps aux | grep "echo" | grep -v grep | awk '{print $2}')
+    [ -n "${fastcgi_pid}" ] && kill -9 ${fastcgi_pid}
+    [ -n "${echo_pid}" ] && kill -9 ${echo_pid}
 }
 
 function fdfs_srever_start
