@@ -9,7 +9,6 @@ int main()
         printf("clintip= %s\r\n", getenv("REMOTE_ADDR"));
         printf("request= %s\r\n", getenv("REQUEST_METHOD"));
         printf("query_string= %s\r\n", getenv("QUERY_STRING"));
-        
 
     }
     return 0;

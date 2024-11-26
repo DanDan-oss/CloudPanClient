@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include "fdfs_client.h"
 #include "fastcommon/logger.h"
-#include "make_log.h"
+#include "common/make_log.h"
 
 int fdfs_upload_file(const char* conf_filename, const char* local_filename, char* file_id)
 {

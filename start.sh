@@ -13,11 +13,20 @@ function init_env
     export CLOUDPAN_PATH="/home/CodeHub/CloudPan/CloudPanClient"
 }
 
-function build_cpp
+function build_server
 {
+    local server_code_root="${CLOUDPAN_PATH}/code/http_server"
     echo "start build code ..."
-    cd ${CLOUDPAN_PATH}/code/http_server
-    make clean && make
+
+    echo "build fdfs_client"
+    [ -d "${server_code_root}/fdfs_client/build" ] && rm -rf ${server_code_root}/fdfs_client/build
+    [ -d "${server_code_root}/fdfs_client/bin" ] && rm -rf ${server_code_root}/fdfs_client/bin
+    mkdir -p ${server_code_root}/fdfs_client/build
+    cd ${server_code_root}/fdfs_client/build
+    cmake ..  && make
+
+    echo "build file_upload"
+    cd ${server_code_root}/file_upload
     echo "end build code ..."
 }
 
@@ -50,8 +59,10 @@ function fdfs_srever_start
     echo "start run server"
     fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} start
     fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} start
-    spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/fastcgi.exe
     spawn-fcgi -a 127.0.0.1 -p 7787 -f /home/build_tools/fcgi2/examples/echo
+    spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/file_upload/fileupload.exe
+    spawn-fcgi -a 127.0.0.1 -p 7789 -f ${CLOUDPAN_PATH}/code/http_server/file_download/fastcgi.exe
+    #spawn-fcgi -a 127.0.0.1 -p 7790 -f ${CLOUDPAN_PATH}/code/http_server/fdfs_client/bin/fdfs_client.exe
     nginx
 }
 
@@ -81,7 +92,7 @@ function main
         fdfs_srever_start
         ;;
     build)
-        build_cpp
+        build_server
         ;;
     *)
         help

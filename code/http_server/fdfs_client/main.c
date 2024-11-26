@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include "fdfs_api.h"
-#include "make_log.h"
-
+#include "../common/make_log.h"
+#include "common/make_log.h"
 int main(int argc, char* argv[])
 {
     char fileid[1024] = {0};

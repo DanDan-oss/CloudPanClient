@@ -95,4 +95,3 @@ int make_path(char *path, char *proc_name)
     }
 	return 0;
 }
-s

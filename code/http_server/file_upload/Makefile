@@ -5,7 +5,7 @@ CPPLFAGS=-I /usr/include
 CFLAGS=-Wall
 LIBS=-lfcgi
 
-fcgi=./fastcgi.exe
+fcgi=./fileupload.exe
 targer=$(fcgi)
 ALL:$(targer) 
 

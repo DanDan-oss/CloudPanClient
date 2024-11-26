@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "make_log.h"
+#include "common/make_log.h"
 
 void process_callback(const char* file_name);
 
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    ret_pid = fork()
+    ret_pid = fork();
     if(0 == ret_pid)
     {
         process_callback(argv[1]);
