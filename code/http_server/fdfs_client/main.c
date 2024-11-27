@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "../common/make_log.h"
 #include "common/make_log.h"
 int main(int argc, char* argv[])
 {

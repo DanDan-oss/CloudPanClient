@@ -24,9 +24,24 @@ function build_server
     mkdir -p ${server_code_root}/fdfs_client/build
     cd ${server_code_root}/fdfs_client/build
     cmake ..  && make
+    cp -rf ../bin/fdfs_client.exe ..
 
     echo "build file_upload"
-    cd ${server_code_root}/file_upload
+    [ -d "${server_code_root}/file_upload/build" ] && rm -rf ${server_code_root}/file_upload/build
+    [ -d "${server_code_root}/file_upload/bin" ] && rm -rf ${server_code_root}/file_upload/bin
+    mkdir -p ${server_code_root}/file_upload/build
+    cd ${server_code_root}/file_upload/build
+    cmake ..  && make
+    cp -rf ../bin/file_upload.exe ..
+
+    echo "build file_download"
+    [ -d "${server_code_root}/file_download/build" ] && rm -rf ${server_code_root}/file_download/build
+    [ -d "${server_code_root}/file_download/bin" ] && rm -rf ${server_code_root}/file_download/bin
+    mkdir -p ${server_code_root}/file_download/build
+    cd ${server_code_root}/file_download/build
+    cmake ..  && make
+    cp -rf ../bin/file_download.exe ..
+
     echo "end build code ..."
 }
 
@@ -45,13 +60,17 @@ function fdfs_init_confi
 function fdfs_srever_stop
 {
     echo "stop run server"
-    fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} stop
-    fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} stop
-    nginx -s stop
-    fastcgi_pid=$(ps aux | grep "fastcgi.exe" | grep -v grep | awk '{print $2}')
+    [ -f "/home/FastDFS/tracker/data/fdfs_trackerd.pid" ] && fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} stop
+    [ -f "/home/FastDFS/storage/data/fdfs_storaged.pid" ] && fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} stop
     echo_pid=$(ps aux | grep "echo" | grep -v grep | awk '{print $2}')
-    [ -n "${fastcgi_pid}" ] && kill -9 ${fastcgi_pid}
+    file_upload_pid=$(ps aux | grep "file_upload.exe" | grep -v grep | awk '{print $2}')
+    file_download_pid=$(ps aux | grep "file_download.exe" | grep -v grep | awk '{print $2}')
+    nginx_pid=$(ps aux | grep "nginx" | grep -v grep | awk '{print $2}')
+    [ -n "${file_download_pid}" ] && kill -9 ${file_download_pid}
+    [ -n "${file_upload_pid}" ] && kill -9 ${file_upload_pid}
     [ -n "${echo_pid}" ] && kill -9 ${echo_pid}
+    [ -n "${nginx_pid}" ] && nginx -s stop
+    return 0
 }
 
 function fdfs_srever_start
@@ -59,11 +78,11 @@ function fdfs_srever_start
     echo "start run server"
     fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} start
     fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} start
-    spawn-fcgi -a 127.0.0.1 -p 7787 -f /home/build_tools/fcgi2/examples/echo
-    spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/file_upload/fileupload.exe
-    spawn-fcgi -a 127.0.0.1 -p 7789 -f ${CLOUDPAN_PATH}/code/http_server/file_download/fastcgi.exe
-    #spawn-fcgi -a 127.0.0.1 -p 7790 -f ${CLOUDPAN_PATH}/code/http_server/fdfs_client/bin/fdfs_client.exe
     nginx
+    spawn-fcgi -a 127.0.0.1 -p 7787 -f /home/build_tools/fcgi2/examples/echo
+    spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/file_upload/file_upload.exe
+    spawn-fcgi -a 127.0.0.1 -p 7789 -f ${CLOUDPAN_PATH}/code/http_server/file_download/file_download.exe
+    #spawn-fcgi -a 127.0.0.1 -p 7790 -f ${CLOUDPAN_PATH}/code/http_server/fdfs_client/fdfs_client.exe
 }
 
 function help

@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "fdfs_client.h"
+#include "fastdfs/fdfs_client.h"
 #include "fastcommon/logger.h"
 #include "common/make_log.h"
 
@@ -22,7 +22,8 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 		return result;
 	}
 
-	// 链接追踪器
+	// 连接分发器
+    // 注意 远端服务器未开启连接不上的情况下,不会报错连接失败.程序会直接崩溃  *** buffer overflow detected ***: terminated
 	pTrackerServer = tracker_get_connection();
 	if (pTrackerServer == NULL)
 	{
@@ -34,7 +35,7 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 
 	*group_name = '\0';
 
-	// 获取追踪器
+	// 获取存储节点
 	if ((result=tracker_query_storage_store(pTrackerServer, \
 	                &storageServer, group_name, &store_path_index)) != 0)
 	{
