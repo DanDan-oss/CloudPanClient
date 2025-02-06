@@ -76,6 +76,8 @@ function fdfs_srever_stop
 function fdfs_srever_start
 {
     echo "start run server"
+    [ -d "${CLOUDPAN_PATH}/temp" ] && rm -rf ${CLOUDPAN_PATH}/temp
+    mkdir -p ${CLOUDPAN_PATH}/temp && cd ${CLOUDPAN_PATH}/temp
     fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} start
     fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} start
     nginx
