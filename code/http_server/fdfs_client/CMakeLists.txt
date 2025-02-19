@@ -5,8 +5,8 @@ project("fdfs_client")
 include_directories(${CMAKE_SOURCE_DIR}/..)
 
 #源文件
-file(GLOB COMMON_SRC "${CMAKE_SOURCE_DIR}/../common/make_log.c")
-file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/main.c" "${CMAKE_SOURCE_DIR}/fdfs_api.c"
+file(GLOB COMMON_SRC "${CMAKE_SOURCE_DIR}/../common/make_log.c"  "${CMAKE_SOURCE_DIR}/../common/fdfs_api.c" )
+file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/main.c"
 )
 
 #参数

@@ -9,6 +9,14 @@
 #include "fastcommon/logger.h"
 #include "common/make_log.h"
 
+#define CLIENT_CONF "/etc/fdfs/client.conf"
+
+int fdfs_upload_file_ex(const char* local_filename, char* file_id)
+{
+	return fdfs_upload_file(CLIENT_CONF, local_filename, file_id);
+}
+
+
 int fdfs_upload_file(const char* conf_filename, const char* local_filename, char* file_id)
 {
 	char group_name[FDFS_GROUP_NAME_MAX_LEN + 1];

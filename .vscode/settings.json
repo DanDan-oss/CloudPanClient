@@ -3,6 +3,7 @@
     "files.associations": {
         "fdfs_api.h": "c",
         "make_log.h": "c",
-        "file_upload.h": "c"
+        "file_upload.h": "c",
+        "deal_mysql.h": "c"
     }
 }

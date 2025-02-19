@@ -11,6 +11,12 @@ int dumpmsg_to_file(char *proc_name, const char *filename,
         do{ \
 		dumpmsg_to_file(proc_name, __FILE__, __LINE__, __FUNCTION__, ##x);\
 	}while(0)
+
+#define LOG_REOUT_EX( proc_name, x...) \
+    do{ \
+    printf(x);\
+    dumpmsg_to_file(proc_name, __FILE__, __LINE__, __FUNCTION__, ##x);\
+}while(0)
 #else
 #define LOG(proc_name, x...)
 #endif
