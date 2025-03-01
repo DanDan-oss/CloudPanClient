@@ -7,13 +7,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->setWindowTitle(WINDOW_TITLE_TEXT);
     this->setWindowIcon(QIcon(WINDOW_ICON_PATH));
-    //this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::FramelessWindowHint);
 
-    this->mainScene = new MainScene(this);
-    this->mainScene->show();
+    this->login = new Login(this);
+    this->login->show();
 }
 
 MainWindow::~MainWindow()
 {
+    delete this->login;
+    this->login = nullptr;
 }
 

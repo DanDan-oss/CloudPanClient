@@ -15,7 +15,8 @@ public:
     ~MainWindow();
 
 private:
-    MainScene* mainScene = nullptr;
+    Login* login = nullptr;
+    QWidget* m_title = nullptr;
 
 };
 #endif // MAINWINDOW_H
