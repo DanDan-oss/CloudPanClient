@@ -3,5 +3,8 @@
         <file>images/favicon.ico</file>
         <file>images/login2.jpg</file>
         <file>images/logo.jpg</file>
+        <file>images/login_setting.png</file>
+        <file>images/login_min.png</file>
+        <file>images/login_close.png</file>
     </qresource>
 </RCC>

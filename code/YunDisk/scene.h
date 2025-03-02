@@ -29,13 +29,18 @@ class TitleWg :  public QWidget
 public:
     explicit TitleWg (const QRect& rect, QWidget *parent = nullptr);
     ~TitleWg();
-    virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
+    void initScene(const QRect &rect);     // 初始化主界面
 protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *ev);
 
 private:
     QPoint m_pt;    // 差值: 鼠标当前位置 - 窗口左上角点
+    QWidget* m_logolable = nullptr;     // login
+    QWidget* m_title = nullptr;     // login
+    QWidget* m_button_set = nullptr;
+    QWidget* m_button_mix = nullptr;
+    QWidget* m_button_close = nullptr;
 };
 
 #endif // SCENE_H
@@ -54,6 +59,9 @@ private:
     QWidget* m_password = nullptr;      // 用户密码标签
     QWidget* m_usertext = nullptr;      // 用户账户框
     QWidget* m_passtext = nullptr;      // 用户密码框
+    QWidget* m_checkpass = nullptr;      // 是否记住密码
+    QWidget* m_button_register = nullptr;      // 注册按钮
+    QWidget* m_button_login = nullptr;      // 注册按钮
 
 signals:
 
