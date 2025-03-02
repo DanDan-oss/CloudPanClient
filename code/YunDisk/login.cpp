@@ -230,7 +230,7 @@ void UserContext::initScene(const QRect &rect)
 
     this->m_button_login = button_login = new QToolButton(this);
     button_login->setText("登录");
-    button_login->setGeometry(iWidget/4, iHeight/5*4 + checkpass->height() , 200, 50);
+    button_login->setGeometry(iWidget/4, iHeight/5*4 - checkpass->height() , 200, 50);
 
 
     //this->setStyleSheet("border: 2px solid #ff0000;");
