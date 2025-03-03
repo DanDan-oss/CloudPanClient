@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QCheckBox>
+#include <QStackedWidget>
 
 Login::Login(QWidget *parent)
     : QWidget{parent}
@@ -20,11 +21,14 @@ Login::~Login()
         delete this->m_user_context;
     if(this->m_title)
         delete this->m_title;
+    if(this->m_stacked_widget)
+        delete this->m_stacked_widget;
 }
 
 void Login::initScene()
 {
     int iHeight= MAIN_SCENE_WINDOW_H, iWidget=MAIN_SCENE_WINDOW_W;
+    QStackedWidget* stacked_widget = nullptr;
 
     this->setFixedSize(iWidget, iHeight);
     this->parentWidget()->setFixedSize(iWidget, iHeight);
@@ -39,8 +43,15 @@ void Login::initScene()
     this->m_title = new TitleWg(QRect(0,0, MAIN_SCENE_WINDOW_W, iHeight/5), this); // title，占据上1/5的地方
     this->m_user_context = new UserContext(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this); // 账户密码输入框
 
-    this->m_title->show();
-    this->m_user_context->show();
+    //this->m_title->show();
+    //this->m_user_context->show();
+
+    this->m_stacked_widget = stacked_widget = new QStackedWidget(this);
+    stacked_widget->setGeometry(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2));
+    stacked_widget->addWidget(this->m_user_context);
+    stacked_widget->setCurrentWidget(this->m_user_context);
+
+
 }
 
 void Login::paintEvent(QPaintEvent* event)
@@ -155,12 +166,10 @@ void TitleWg::mousePressEvent(QMouseEvent *ev)
     // 如果鼠标左键按下
     if(ev->button() == Qt::LeftButton)
     {
-        // 求差值 = 鼠标当前位置 - 窗口左上角点
+        // 鼠标至当前窗口的相对位置 =  鼠标当前屏幕位置 - 当前主窗口左上角点的屏幕位置
         m_pt = ev->globalPos() - this->parentWidget()->parentWidget()->geometry().topLeft();
     }
 }
-
-
 
 UserContext::UserContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -223,14 +232,19 @@ void UserContext::initScene(const QRect &rect)
     this->m_checkpass = checkpass =new QCheckBox("记住密码" , this);
     checkpass->setGeometry(iWidget/8, iHeight/5*3, 183, 25);
 
+    QFont font("Microsoft YaHei UI", 9, QFont::Bold, false);
+    font.setUnderline(true);
     this->m_button_register = button_register = new QToolButton(this);
+    button_register->setFont(font);
     button_register->setText("还没有账户,马上注册");
-    button_register->setFont(QFont("Microsoft YaHei UI", 9, QFont::Bold, false));
+    button_register->setStyleSheet("color: rgb(255, 170, 0);");
+    button_register->setAutoRaise(true);
     button_register->setGeometry(checkpass->x() + checkpass->width()+20, checkpass->y()+5, 127, 18);
 
     this->m_button_login = button_login = new QToolButton(this);
     button_login->setText("登录");
     button_login->setGeometry(iWidget/4, iHeight/5*4 - checkpass->height() , 200, 50);
+    button_login->setStyleSheet("background-image: url(:/images/balckButton.png);");
 
 
     //this->setStyleSheet("border: 2px solid #ff0000;");
@@ -244,4 +258,3 @@ void UserContext::paintEvent(QPaintEvent* event)
 
     return QWidget::paintEvent(event);
 }
-

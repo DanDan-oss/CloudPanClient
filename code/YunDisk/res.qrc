@@ -6,5 +6,6 @@
         <file>images/login_setting.png</file>
         <file>images/login_min.png</file>
         <file>images/login_close.png</file>
+        <file>images/balckButton.png</file>
     </qresource>
 </RCC>
