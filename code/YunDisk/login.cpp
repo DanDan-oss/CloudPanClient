@@ -23,6 +23,8 @@ Login::~Login()
         delete this->m_title;
     if(this->m_stacked_widget)
         delete this->m_stacked_widget;
+    if(this->m_register_context)
+        delete this->m_register_context;
 }
 
 void Login::initScene()
@@ -42,15 +44,17 @@ void Login::initScene()
     this->setFont(QFont("微软雅黑", 16, QFont::Bold, false));
     this->m_title = new TitleWg(QRect(0,0, MAIN_SCENE_WINDOW_W, iHeight/5), this); // title，占据上1/5的地方
     this->m_user_context = new UserContext(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this); // 账户密码输入框
+    this->m_register_context = new RegisterContext(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this);
 
     //this->m_title->show();
     //this->m_user_context->show();
 
+
     this->m_stacked_widget = stacked_widget = new QStackedWidget(this);
     stacked_widget->setGeometry(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2));
     stacked_widget->addWidget(this->m_user_context);
+    stacked_widget->addWidget(this->m_register_context);
     stacked_widget->setCurrentWidget(this->m_user_context);
-
 
 }
 
@@ -75,74 +79,56 @@ TitleWg::TitleWg(const QRect& rect, QWidget *parent)
 
 TitleWg::~TitleWg()
 {
-    if(this->m_logolable)
-        delete this->m_logolable;
-    if(this->m_title)
-        delete this->m_title;
-    if(this->m_button_set)
-        delete this->m_button_set;
-    if(this->m_button_mix)
-        delete this->m_button_mix;
-    if(this->m_button_close)
-        delete this->m_button_close;
+
 }
 
 void TitleWg::initScene(const QRect &rect)
 {
     QPixmap pixmap(WINDOW_LOGO_PATH);
-    QLabel* logo = nullptr;
-    QLabel* title = nullptr;
-    QToolButton* button_set = nullptr;
-    QToolButton* button_mix = nullptr;
-    QToolButton* button_close = nullptr;
     QSize btn_icon = {32, 32};
 
 
     this->setGeometry(rect);
     this->setStyleSheet("color:rgb(255, 255, 255)");
 
-    logo = new  QLabel(this);
-    logo->setPixmap(pixmap.scaled(40, 40));
-    logo->setGeometry(30, 30 ,40, 40);
+    this->m_logolable.setParent(this);
+    this->m_logolable.setPixmap(pixmap.scaled(40, 40));
+    this->m_logolable.setGeometry(30, 30 ,40, 40);
 
-    title = new  QLabel(QString("CloudPan"),this);
-    //title->setAlignment(Qt::AlignCenter);   // 设置文本居中
-    title->setFont(QFont("新宋体", 14, QFont::Bold, false));
-    title->setStyleSheet("color:#ff6600;");   // 设置颜色
-    title->setGeometry(logo->width()+logo->x()+20,logo->y(), 100, 40);
+    this->m_title.setParent(this);
+    this->m_title.setText(QString("CloudPan"));
+    //this->m_title.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_title.setFont(QFont("新宋体", 14, QFont::Bold, false));
+    this->m_title.setStyleSheet("color:#ff6600;");   // 设置颜色
+    this->m_title.setGeometry(this->m_logolable.width()+this->m_logolable.x()+20,this->m_logolable.y(), 100, 40);
 
-    button_close = new QToolButton(this);
-    button_close->setText("...");
-    button_close->setIcon(QIcon(":/images/login_close.png"));
-    button_close->setIconSize(btn_icon);
-    button_close->setFixedSize(39, 38);
-    button_close->move(this->width()- button_close->width() -20, logo->y());
-    button_close->setAutoRaise(true);     // 不会自动填充背景色
-    button_close->show();
+    this->m_button_close.setParent(this);
+    this->m_button_close.setText("...");
+    this->m_button_close.setIcon(QIcon(":/images/login_close.png"));
+    this->m_button_close.setIconSize(btn_icon);
+    this->m_button_close.setFixedSize(39, 38);
+    this->m_button_close.move(this->width()- this->m_button_close.width() -20, this->m_logolable.y());
+    this->m_button_close.setAutoRaise(true);     // 不会自动填充背景色
+    this->m_button_close.show();
 
-    button_mix = new QToolButton(this);
-    button_mix->setText("...");
-    button_mix->setIcon(QIcon(":/images/login_min.png"));
-    button_mix->setIconSize(btn_icon);
-    button_mix->setFixedSize(39, 38);
-    button_mix->move(button_close->x() - button_mix->width() -20, logo->y());
-    button_mix->setAutoRaise(true);     // 不会自动填充背景色
-    button_mix->show();
+    this->m_button_mix.setParent(this);
+    this->m_button_mix.setText("...");
+    this->m_button_mix.setIcon(QIcon(":/images/login_min.png"));
+    this->m_button_mix.setIconSize(btn_icon);
+    this->m_button_mix.setFixedSize(39, 38);
+    this->m_button_mix.move(this->m_button_close.x() - this->m_button_mix.width() -20, this->m_logolable.y());
+    this->m_button_mix.setAutoRaise(true);     // 不会自动填充背景色
+    this->m_button_mix.show();
 
-    button_set = new QToolButton(this);
-    button_set->setText("...");
-    button_set->setIcon(QIcon(":/images/login_setting.png"));
-    button_set->setIconSize(btn_icon);
-    button_set->setFixedSize(39, 38);
-    button_set->move(button_mix->x() - button_mix->width() -20, logo->y());
-    button_set->setAutoRaise(true);     // 不会自动填充背景色
-    button_set->show();
+    this->m_button_set.setParent(this);
+    this->m_button_set.setText("...");
+    this->m_button_set.setIcon(QIcon(":/images/login_setting.png"));
+    this->m_button_set.setIconSize(btn_icon);
+    this->m_button_set.setFixedSize(39, 38);
+    this->m_button_set.move(this->m_button_mix.x() - this->m_button_mix.width() -20,this->m_logolable.y());
+    this->m_button_set.setAutoRaise(true);     // 不会自动填充背景色
+    this->m_button_set.show();
 
-    this->m_logolable = logo;
-    this->m_title = title;
-    this->m_button_set = button_set;
-    this->m_button_mix = button_mix;
-    this->m_button_close = button_close;
 
     //this->setStyleSheet("border: 2px solid #ff0000;");
 
@@ -179,72 +165,53 @@ UserContext::UserContext(const QRect &rect, QWidget *parent)
 
 UserContext::~UserContext()
 {
-    if(this->m_title)
-        delete this->m_title;
-    if(this->m_username)
-        delete this->m_username;
-    if(this->m_password)
-        delete this->m_password;
-    if(this->m_usertext)
-        delete this->m_usertext;
-    if(this->m_passtext)
-        delete this->m_passtext;
-    if(this->m_checkpass)
-        delete this->m_checkpass;
-    if(this->m_button_register)
-        delete this->m_button_register;
-    if(this->m_button_login)
-        delete this->m_button_login;
+
 }
 
 void UserContext::initScene(const QRect &rect)
 {
-    QLabel* title  = nullptr;
-    QLabel* username = nullptr;
-    QLabel* password = nullptr;
-    QLineEdit* usertext = nullptr;
-    QLineEdit* passtext = nullptr;
-    QCheckBox* checkpass = nullptr;
-    QToolButton* button_register = nullptr;
-    QToolButton* button_login = nullptr;
     int iHeight=rect.height(), iWidget=rect.width();
 
     this->setGeometry(rect);
     // 设置用户登录标签
-    this->m_title = title = new  QLabel("用户登录", this);
-    title->setAlignment(Qt::AlignCenter);   // 设置文本居中
-    title->setFont(QFont("新宋体", 24, QFont::Bold, false));
-    title->setGeometry(iWidget/7*2, 0, 200, 50);    // 带了show()
+    this->m_title.setParent(this);
+    this->m_title.setText("用户登录");
+    this->m_title.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_title.setFont(QFont("新宋体", 24, QFont::Bold, false));
+    this->m_title.setGeometry(iWidget/7*2, 0, 200, 50);    // 带了show()
 
-    this->m_username = username = new  QLabel("用户名:", this);
-    username->setAlignment(Qt::AlignCenter);   // 设置文本居中
-    username->setGeometry(iWidget/8, iHeight/5*1, 100, 30);
+    this->m_username.setParent(this);
+    this->m_username.setText("用户名:");
+    this->m_username.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_username.setGeometry(iWidget/8, iHeight/5*1, 100, 30);
 
-    this->m_password = password = new QLabel("密码:", this);
-    password->setAlignment(Qt::AlignCenter);   // 设置文本居中
-    password->setGeometry(iWidget/8,iHeight/5*2, 100, 30);
+    this->m_password.setParent(this);
+    this->m_password.setText("密码:");
+    this->m_password.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_password.setGeometry(iWidget/8,iHeight/5*2, 100, 30);
 
-    this->m_usertext = usertext = new QLineEdit(this);
-    this->m_passtext = passtext = new QLineEdit(this);
-    usertext->setGeometry(iWidget/8*3, iHeight/5*1, 200, 30);
-    passtext->setGeometry(iWidget/8*3, iHeight/5*2, 200, 30);
+    this->m_usertext.setParent(this);
+    this->m_passtext.setParent(this);
+    this->m_usertext.setGeometry(iWidget/8*3, iHeight/5*1, 200, 30);
+    this->m_passtext.setGeometry(iWidget/8*3, iHeight/5*2, 200, 30);
 
-    this->m_checkpass = checkpass =new QCheckBox("记住密码" , this);
-    checkpass->setGeometry(iWidget/8, iHeight/5*3, 183, 25);
+    this->m_checkpass.setText("记住密码");
+    this->m_checkpass.setParent(this);
+    this->m_checkpass.setGeometry(iWidget/8, iHeight/5*3, 183, 25);
 
     QFont font("Microsoft YaHei UI", 9, QFont::Bold, false);
     font.setUnderline(true);
-    this->m_button_register = button_register = new QToolButton(this);
-    button_register->setFont(font);
-    button_register->setText("还没有账户,马上注册");
-    button_register->setStyleSheet("color: rgb(255, 170, 0);");
-    button_register->setAutoRaise(true);
-    button_register->setGeometry(checkpass->x() + checkpass->width()+20, checkpass->y()+5, 127, 18);
+    this->m_button_register.setParent(this);
+    this->m_button_register.setFont(font);
+    this->m_button_register.setText("还没有账户,马上注册");
+    this->m_button_register.setStyleSheet("color: rgb(255, 170, 0);");
+    this->m_button_register.setAutoRaise(true);
+    this->m_button_register.setGeometry(this->m_checkpass.x() + this->m_checkpass.width()+20, this->m_checkpass.y()+5, 127, 18);
 
-    this->m_button_login = button_login = new QToolButton(this);
-    button_login->setText("登录");
-    button_login->setGeometry(iWidget/4, iHeight/5*4 - checkpass->height() , 200, 50);
-    button_login->setStyleSheet("background-image: url(:/images/balckButton.png);");
+    this->m_button_login.setParent(this);
+    this->m_button_login.setText("登录");
+    this->m_button_login.setGeometry(iWidget/4, iHeight/5*4 - this->m_checkpass.height() , 200, 50);
+    this->m_button_login.setStyleSheet("background-image: url(:/images/balckButton.png);");
 
 
     //this->setStyleSheet("border: 2px solid #ff0000;");
@@ -257,4 +224,79 @@ void UserContext::paintEvent(QPaintEvent* event)
 
 
     return QWidget::paintEvent(event);
+}
+
+
+RegisterContext::RegisterContext(const QRect &rect, QWidget *parent)
+    : QWidget{parent}
+
+{
+    this->initScene(rect);
+}
+
+RegisterContext::~RegisterContext()
+{
+
+}
+
+void RegisterContext::initScene(const QRect &rect)
+{
+    int iHeight=rect.height(), iWidget=rect.width();
+    this->setGeometry(rect);
+
+
+    this->setFont(QFont("Microsoft YaHei UI", 9, QFont::Bold, false));
+    // 设置用户登录标签
+    this->m_title.setParent(this);
+    this->m_title.setText("用户注册");
+    this->m_title.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_title.setFont(QFont("华文新魏", 26, QFont::Bold, false));
+    this->m_title.setGeometry(iWidget/7*2, 0, 200, 50);    // 带了show()
+
+    this->m_username.setParent(this);
+    this->m_username.setText("用户名:");
+    this->m_username.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_username.setGeometry(iWidget/7*2, iHeight/10*2, 60, 25);
+    this->m_usertext.setParent(this);
+    this->m_usertext.setGeometry(iWidget/7*3, iHeight/10*2, 133, 25);
+
+    this->m_nickname.setParent(this);
+    this->m_nickname.setText("昵称:");
+    this->m_nickname.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_nickname.setGeometry(iWidget/7*2, iHeight/10*3, 60, 25);
+    this->m_nicktext.setParent(this);
+    this->m_nicktext.setGeometry(iWidget/7*3, iHeight/10*3, 133, 25);
+
+    this->m_password.setParent(this);
+    this->m_password.setText("密码:");
+    this->m_password.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_password.setGeometry(iWidget/7*2,iHeight/10*4, 60, 25);
+    this->m_passtext.setParent(this);
+    this->m_passtext.setGeometry(iWidget/7*3, iHeight/10*4, 133, 25);
+
+    this->m_confirm_password.setParent(this);
+    this->m_confirm_password.setText("确认密码:");
+    this->m_confirm_password.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_confirm_password.setGeometry(iWidget/7*2,iHeight/10*5, 60, 25);
+    this->m_confirm_text.setParent(this);
+    this->m_confirm_text.setGeometry(iWidget/7*3, iHeight/10*5, 133, 25);
+
+    this->m_phone.setParent(this);
+    this->m_phone.setText("手机:");
+    this->m_phone.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_phone.setGeometry(iWidget/7*2,iHeight/10*6, 60, 25);
+    this->m_phone_text.setParent(this);
+    this->m_phone_text.setGeometry(iWidget/7*3, iHeight/10*6, 133, 25);
+
+    this->m_email.setParent(this);
+    this->m_email.setText("邮箱:");
+    this->m_email.setAlignment(Qt::AlignCenter);   // 设置文本居中
+    this->m_email.setGeometry(iWidget/7*2,iHeight/10*7, 60, 25);
+    this->m_email_text.setParent(this);
+    this->m_email_text.setGeometry(iWidget/7*3, iHeight/10*7, 133, 25);
+
+    this->m_button_register.setParent(this);
+    this->m_button_register.setText("注册");
+    this->m_button_register.setGeometry(iWidget/7*2, iHeight-60 , 200, 50);
+    this->m_button_register.setStyleSheet("background-image: url(:/images/balckButton.png);");
 }
