@@ -9,6 +9,13 @@
 #include <QCheckBox>
 #include <QStackedWidget>
 #include <QLineEdit>
+#include <QStackedWidget>
+
+class Login;
+class TitleWg;
+class LoginContext;
+class RegisterContext;
+class ServerConfig;
 
 // 窗口主场景类===========================
 // 登录窗口
@@ -18,15 +25,27 @@ class Login  : public QWidget
 public:
     explicit Login (QWidget *parent = nullptr);
     ~Login();
+protected:
     void initScene();     // 初始化主界面,绘制界面初始化回调函数
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
+
+public slots:
+    void switch_register_page();
+
+private slots:
+    void on_register_button_clicked();      // 注册按钮被点击
+    void on_login_button_clicked();         // 登录按钮被点击
+    void on_serverconf_button_clicked();    // 服务器设置按钮被点击
+
 private:
-    QWidget* m_stacked_widget = nullptr;
-    QWidget* m_title = nullptr;
-    QWidget* m_user_context = nullptr;
-    QWidget* m_register_context = nullptr;
+    QStackedWidget m_stacked_widget;
+    TitleWg* m_title_page;
+    LoginContext* m_login_page = nullptr;
+    RegisterContext* m_register_page = nullptr;
+    ServerConfig* m_serverconf_page = nullptr;
 
 signals:
+
 
 };
 
@@ -49,17 +68,20 @@ private:
     QToolButton m_button_set;
     QToolButton m_button_mix;
     QToolButton m_button_close;
+signals:
+    void showSetServerConfig();
+    void CloseWindow();
 };
 
 // 登录界面
-class UserContext  : public QWidget
+class LoginContext  : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UserContext (const QRect& rect, QWidget *parent = nullptr);
+    explicit LoginContext (const QRect& rect, QWidget *parent = nullptr);
     void initScene(const QRect &rect);     // 初始化主界面
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
-    ~UserContext();
+    ~LoginContext();
 private:
     QLabel m_title;      // 用户登录标签
     QLabel m_username;      // 用户账户标签
@@ -70,7 +92,6 @@ private:
     QToolButton m_button_register;      // 注册按钮
     QToolButton m_button_login;      // 登录按钮
 
-signals:
 
 };
 
@@ -98,6 +119,27 @@ private:
     QLineEdit m_phone_text;      // 手机密码框
     QLineEdit m_email_text;      // 邮箱框
     QToolButton m_button_register;      // 注册按钮
+
+signals:
+
+};
+
+// 注册界面
+class ServerConfig  : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit ServerConfig (const QRect& rect, QWidget *parent = nullptr);
+    ~ServerConfig();
+    void initScene(const QRect &rect);     // 初始化主界面
+private:
+    QLabel m_title;             // 服务器设置标签
+    QLabel m_server;             // 服务器设置标签
+    QLabel m_port;             // 服务器设置标签
+
+    QLineEdit m_server_address;    // 服务器地址
+    QLineEdit m_server_port;       // 服务器端口
+    QToolButton m_button_ok;      // 注册按钮
 
 signals:
 
