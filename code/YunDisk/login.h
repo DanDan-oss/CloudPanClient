@@ -30,14 +30,16 @@ protected:
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
 
 public slots:
-    void show_register_page(Login* login);
-    void show_serverconf_page(Login* login);
+    void showRegisterPage(Login* login);      // 显示注册窗口
+    void showServerConfPage(Login* login);    // 显示配置服务器窗口
+    void closeWindow(Login* login);            //
+    void showMinWindow(Login* login);            // 关闭窗口按钮被点击
 
 
 private slots:
-    void on_register_button_clicked();      // 注册按钮被点击
-    void on_login_button_clicked();         // 登录按钮被点击
-    void on_serverconf_button_clicked();    // 服务器设置按钮被点击
+    void onRegisterButtonClicked();      // 注册按钮被点击
+    void onLoginButtonClicked();         // 登录按钮被点击
+    void onServerConfButtonClicked();    // 服务器设置按钮被点击
 
 private:
     QStackedWidget m_stacked_widget;
@@ -81,6 +83,7 @@ class LoginContext  : public QWidget
 public:
     explicit LoginContext (const QRect& rect, QWidget *parent = nullptr);
     void initScene(const QRect &rect);     // 初始化主界面
+    void setFonceUserText();
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
     ~LoginContext();
 private:
@@ -104,6 +107,7 @@ public:
     explicit RegisterContext (const QRect& rect, QWidget *parent = nullptr);
     ~RegisterContext();
     void initScene(const QRect &rect);     // 初始化主界面
+    void setFonceUserText();
 private:
     QLabel m_title;      // 用户注册标签
     QLabel m_username;      // 用户账户标签
@@ -133,6 +137,7 @@ public:
     explicit ServerConfig (const QRect& rect, QWidget *parent = nullptr);
     ~ServerConfig();
     void initScene(const QRect &rect);     // 初始化主界面
+    void setFonceIPAdressText();
 private:
     QLabel m_title;             // 服务器设置标签
     QLabel m_server;             // 服务器设置标签
