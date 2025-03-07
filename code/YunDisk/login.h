@@ -30,7 +30,9 @@ protected:
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
 
 public slots:
-    void switch_register_page();
+    void show_register_page(Login* login);
+    void show_serverconf_page(Login* login);
+
 
 private slots:
     void on_register_button_clicked();      // 注册按钮被点击
@@ -69,7 +71,6 @@ private:
     QToolButton m_button_mix;
     QToolButton m_button_close;
 signals:
-    void showSetServerConfig();
     void CloseWindow();
 };
 

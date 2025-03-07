@@ -52,14 +52,12 @@ void Login::initScene()
     //this->m_title->show();
     //this->m_user_context->show();
 
-
     this->m_stacked_widget.setParent(this);
     this->m_stacked_widget.setGeometry(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2));
-    this->m_stacked_widget.addWidget(this->m_login_page);
-    this->m_stacked_widget.addWidget(this->m_register_page);
-    this->m_stacked_widget.addWidget(this->m_serverconf_page);
+    this->m_stacked_widget.addWidget(this->m_login_page);       // 会将this->m_login_page的Parent重置为this->m_stacked_widget
+    this->m_stacked_widget.addWidget(this->m_register_page);       // 会将this->m_register_page的Parent重置为this->m_stacked_widget
+    this->m_stacked_widget.addWidget(this->m_serverconf_page);       // 会将this->m_serverconf_page的Parent重置为this->m_stacked_widget
     this->m_stacked_widget.setCurrentWidget(this->m_login_page);
-
 }
 
 void Login::paintEvent(QPaintEvent* event)
@@ -74,16 +72,14 @@ void Login::paintEvent(QPaintEvent* event)
     return QWidget::paintEvent(event);
 }
 
-void Login::switch_register_page()
+void Login::show_register_page(Login* login)
 {
-    //Login* login = (Login*)me;
+    login->m_stacked_widget.setCurrentWidget(login->m_register_page);
+}
 
-    //login->m_stacked_widget.setCurrentWidget(this->m_register_page);
-    // qDebug() << this->m_register_page;
-    // qDebug() << this->m_login_page;
-    // qDebug() << this->m_serverconf_page;
-    // qDebug() << &(this->m_stacked_widget);
-    qDebug() <<" &(this->m_stacked_widget)";
+void Login::show_serverconf_page(Login *login)
+{
+    login->m_stacked_widget.setCurrentWidget(login->m_serverconf_page);
 }
 
 void Login::on_register_button_clicked()
@@ -113,15 +109,19 @@ TitleWg::TitleWg(const QRect& rect, QWidget *parent)
         emit CloseWindow();
     });
     // 服务器设置按钮被点击(右上角的小螺丝)
-    connect(&this->m_button_set, &QToolButton::clicked, [=]()
+    connect(&this->m_button_set, &QToolButton::clicked, this, [=]()
     {
+
+        Login* login = (Login*)(this->parent());
+        // 切换到注册界
+        emit login->show_serverconf_page(login);
         // 发送信号给父窗口切换到服务器设置窗口
-        emit showSetServerConfig();
     });
     // 窗口最小化按钮被点击
     connect(&this->m_button_mix, &QToolButton::clicked, [=]()
     {
-        ((QMainWindow*)(this->parent()->parent()))->showMinimized();
+        QMainWindow* window = (QMainWindow*)(this->parent()->parent());
+        window->showMinimized();
     });
 }
 
@@ -210,8 +210,10 @@ LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     this->initScene(rect);
     connect(&this->m_button_register, &QToolButton::clicked, this, [=]()
     {
+        // LoginContext -->m_stacked_widget-->Login
+        Login* login = (Login*)(this->parent()->parent());
         // 切换到注册界
-        emit ((Login*)(this->parent()))->switch_register_page();
+        emit login->show_register_page(login);
     });
 }
 
@@ -358,6 +360,7 @@ void RegisterContext::initScene(const QRect &rect)
 }
 
 ServerConfig::ServerConfig(const QRect &rect, QWidget *parent)
+    : QWidget{parent}
 {
     this->initScene(rect);
 }
