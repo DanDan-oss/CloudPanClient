@@ -52,14 +52,14 @@ void Login::initScene()
     //this->m_title->show();
     //this->m_user_context->show();
 
+
     this->m_stacked_widget.setParent(this);
     this->m_stacked_widget.setGeometry(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2));
     this->m_stacked_widget.addWidget(this->m_login_page);       // 会将this->m_login_page的Parent重置为this->m_stacked_widget
     this->m_stacked_widget.addWidget(this->m_register_page);       // 会将this->m_register_page的Parent重置为this->m_stacked_widget
     this->m_stacked_widget.addWidget(this->m_serverconf_page);       // 会将this->m_serverconf_page的Parent重置为this->m_stacked_widget
     this->m_stacked_widget.setCurrentWidget(this->m_login_page);
-    this->m_login_page->setFonceUserText();     // 设置登录窗口焦点
-
+    this->m_login_page->initShowData();
 }
 
 void Login::paintEvent(QPaintEvent* event)
@@ -77,13 +77,13 @@ void Login::paintEvent(QPaintEvent* event)
 void Login::showRegisterPage(Login* login)
 {
     login->m_stacked_widget.setCurrentWidget(login->m_register_page);
-    ((RegisterContext*)login->m_register_page)->setFonceUserText();
+    ((RegisterContext*)login->m_register_page)->initShowData();
 }
 
 void Login::showServerConfPage(Login *login)
 {
     login->m_stacked_widget.setCurrentWidget(login->m_serverconf_page);
-    ((ServerConfig*)(login->m_serverconf_page))->setFonceIPAdressText();
+    ((ServerConfig*)(login->m_serverconf_page))->initShowData();
 }
 
 void Login::closeWindow(Login *login)
@@ -94,7 +94,7 @@ void Login::closeWindow(Login *login)
     if(pqwCurrentWidget == login->m_register_page || pqwCurrentWidget == login->m_serverconf_page)
     {   // 当前在 注册窗口 或者 服务器配置窗口 点击关闭按钮,返回登录主界面
         this->m_stacked_widget.setCurrentWidget(this->m_login_page);
-        ((LoginContext*)this->m_login_page)->setFonceUserText();
+        ((LoginContext*)this->m_login_page)->initShowData();
         return;
     }
     if(pqwCurrentWidget == login->m_login_page)
@@ -235,6 +235,7 @@ LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
 {
     this->initScene(rect);
+    this->initShowData();
     connect(&this->m_button_register, &QToolButton::clicked, this, [=]()
     {
         // LoginContext -->m_stacked_widget-->Login
@@ -274,7 +275,6 @@ void LoginContext::initScene(const QRect &rect)
     this->m_usertext.setParent(this);
     this->m_usertext.setGeometry(iWidget/8*3, iHeight/5*1, 200, 30);
     this->m_usertext.setToolTip("合法字符:[a-z|A-Z|#|@|0-9|-|_|*],字符个数: 3~16");
-    this->m_usertext.setFocus();
 
     this->m_passtext.setParent(this);
     this->m_passtext.setGeometry(iWidget/8*3, iHeight/5*2, 200, 30);
@@ -304,9 +304,13 @@ void LoginContext::initScene(const QRect &rect)
     //this->m_username->setGeometry(iWidget-10,iHeight-10, 39, 21);
 }
 
-void LoginContext::setFonceUserText()
+void LoginContext::initShowData()
 {
     this->m_usertext.setFocus();            // 设置获取焦点
+
+    this->m_usertext.setText(this->m_login_info.username);
+    this->m_password.setText(this->m_login_info.password);
+    this->m_checkpass.setCheckState(this->m_login_info.checkoutpass? Qt::Checked :Qt::Unchecked);
 }
 
 void LoginContext::paintEvent(QPaintEvent* event)
@@ -322,6 +326,7 @@ RegisterContext::RegisterContext(const QRect &rect, QWidget *parent)
 
 {
     this->initScene(rect);
+    this->initShowData();
 }
 
 RegisterContext::~RegisterContext()
@@ -391,15 +396,19 @@ void RegisterContext::initScene(const QRect &rect)
     this->m_button_register.setStyleSheet("background-image: url(:/images/balckButton.png);font: 75 18pt \"新宋体\";color: rgb(255, 255, 255);");
 }
 
-void RegisterContext::setFonceUserText()
+void RegisterContext::initShowData()
 {
     this->m_usertext.setFocus();
+
 }
+
+
 
 ServerConfig::ServerConfig(const QRect &rect, QWidget *parent)
     : QWidget{parent}
 {
     this->initScene(rect);
+    this->initShowData();
 }
 
 ServerConfig::~ServerConfig()
@@ -442,7 +451,10 @@ void ServerConfig::initScene(const QRect &rect)
     this->m_button_ok.setAutoRaise(true);
 }
 
-void ServerConfig::setFonceIPAdressText()
+void ServerConfig::initShowData()
 {
     this->m_server_address.setFocus();
+    this->m_server_address.setText(this->m_server_info.ip);
+    this->m_server_port.setText(this->m_server_info.port);
 }
+

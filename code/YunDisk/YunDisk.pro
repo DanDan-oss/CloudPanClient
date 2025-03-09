@@ -14,6 +14,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    global.h \
     login.h \
     macro.h \
     mainwindow.h

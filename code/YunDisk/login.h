@@ -10,6 +10,7 @@
 #include <QStackedWidget>
 #include <QLineEdit>
 #include <QStackedWidget>
+#include "global.h"
 
 class Login;
 class TitleWg;
@@ -49,8 +50,6 @@ private:
     ServerConfig* m_serverconf_page = nullptr;
 
 signals:
-
-
 };
 
 // title 标题栏
@@ -83,7 +82,7 @@ class LoginContext  : public QWidget
 public:
     explicit LoginContext (const QRect& rect, QWidget *parent = nullptr);
     void initScene(const QRect &rect);     // 初始化主界面
-    void setFonceUserText();
+    void initShowData();
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
     ~LoginContext();
 private:
@@ -96,7 +95,7 @@ private:
     QToolButton m_button_register;      // 注册按钮
     QToolButton m_button_login;      // 登录按钮
 
-
+    LoginInfo m_login_info;
 };
 
 // 注册界面
@@ -107,7 +106,7 @@ public:
     explicit RegisterContext (const QRect& rect, QWidget *parent = nullptr);
     ~RegisterContext();
     void initScene(const QRect &rect);     // 初始化主界面
-    void setFonceUserText();
+    void initShowData();                    // 界面显示数据
 private:
     QLabel m_title;      // 用户注册标签
     QLabel m_username;      // 用户账户标签
@@ -125,6 +124,8 @@ private:
     QLineEdit m_email_text;      // 邮箱框
     QToolButton m_button_register;      // 注册按钮
 
+    RegisterInfo m_register_info;
+
 signals:
 
 };
@@ -137,7 +138,7 @@ public:
     explicit ServerConfig (const QRect& rect, QWidget *parent = nullptr);
     ~ServerConfig();
     void initScene(const QRect &rect);     // 初始化主界面
-    void setFonceIPAdressText();
+    void initShowData();                    // 界面显示数据
 private:
     QLabel m_title;             // 服务器设置标签
     QLabel m_server;             // 服务器设置标签
@@ -146,6 +147,8 @@ private:
     QLineEdit m_server_address;    // 服务器地址
     QLineEdit m_server_port;       // 服务器端口
     QToolButton m_button_ok;      // 注册按钮
+
+    ServerInfo m_server_info;
 
 signals:
 
