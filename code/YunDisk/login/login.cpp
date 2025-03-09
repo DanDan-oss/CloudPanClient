@@ -13,6 +13,8 @@
 Login::Login(QWidget *parent)
     : QWidget{parent}
 {
+    this->m_info.setConfPath(QString("./conf/Config.ini"));
+    this->m_info.readConfContext();
     this->initScene();
     //connect(this->m_title)
 }
@@ -107,6 +109,11 @@ void Login::showMinWindow(Login *login)
 {
     QMainWindow* window=(QMainWindow*)login->parent();
     window->showMinimized();
+}
+
+const InfoContext& Login::getInfoContext() const
+{
+    return this->m_info;
 }
 
 void Login::onRegisterButtonClicked()

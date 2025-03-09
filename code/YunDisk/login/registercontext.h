@@ -1,11 +1,11 @@
 #ifndef REGISTERCONTEXT_H
 #define REGISTERCONTEXT_H
 
-#include "global.h"
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
+#include "infocontext.h"
 
 // 注册界面
 class RegisterContext  : public QWidget

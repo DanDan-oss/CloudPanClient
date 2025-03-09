@@ -51,5 +51,5 @@ void ServerConfig::initShowData()
 {
     this->m_server_address.setFocus();
     this->m_server_address.setText(this->m_server_info.ip);
-    this->m_server_port.setText(this->m_server_info.port);
+    this->m_server_port.setText(this->m_server_info.port== true ? "true": "false");
 }

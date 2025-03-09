@@ -1,11 +1,11 @@
 #ifndef SERVERCONFIG_H
 #define SERVERCONFIG_H
 
-#include "global.h"
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
+#include "infocontext.h"
 
 // 服务器配置界面
 class ServerConfig  : public QWidget

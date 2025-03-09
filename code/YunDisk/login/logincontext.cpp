@@ -1,6 +1,6 @@
 #include "logincontext.h"
 #include "login.h"
-
+#include "infocontext.h"
 
 LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -78,10 +78,15 @@ void LoginContext::initScene(const QRect &rect)
 void LoginContext::initShowData()
 {
     this->m_usertext.setFocus();            // 设置获取焦点
-
-    this->m_usertext.setText(this->m_login_info.username);
-    this->m_password.setText(this->m_login_info.password);
-    this->m_checkpass.setCheckState(this->m_login_info.checkoutpass? Qt::Checked :Qt::Unchecked);
+    Login* login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+    const LoginInfo& login_info = login->getInfoContext().getLoginInfo();
+    this->m_usertext.setText(login_info.username);
+    this->m_passtext.setText(login_info.password);
+    this->m_checkpass.setCheckState(login_info.savepass? Qt::Checked :Qt::Unchecked);
 }
 
 void LoginContext::paintEvent(QPaintEvent* event)

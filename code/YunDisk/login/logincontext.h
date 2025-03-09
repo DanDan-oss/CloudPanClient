@@ -1,7 +1,6 @@
 #ifndef LOGINCONTEXT_H
 #define LOGINCONTEXT_H
 
-#include "global.h"
 #include <QWidget>
 #include <QLabel>
 #include <QToolButton>
@@ -27,8 +26,6 @@ private:
     QCheckBox m_checkpass;      // 是否记住密码
     QToolButton m_button_register;      // 注册按钮
     QToolButton m_button_login;      // 登录按钮
-
-    LoginInfo m_login_info;
 };
 
 #endif // LOGINCONTEXT_H

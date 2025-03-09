@@ -8,7 +8,13 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+#LIBS += -L"D:/OpenSSL/lib" -llibcrypto # 库文件名及其路径
+#INCLUDEPATH += $$quote(D:/OpenSSL/include/) #头文件路径
+#INCLUDEPATH += D:/OpenSSL/include/
+
+
 SOURCES += \
+    login/infocontext.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -18,7 +24,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    global.h \
+    login/infocontext.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \

@@ -1,11 +1,11 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include "global.h"
 #include "titlewg.h"
 #include "logincontext.h"
 #include "registercontext.h"
 #include "serverconfig.h"
+#include "infocontext.h"
 #include <QWidget>
 #include <QStackedWidget>
 
@@ -18,6 +18,7 @@ class Login  : public QWidget
 public:
     explicit Login (QWidget *parent = nullptr);
     ~Login();
+    const InfoContext& getInfoContext() const;
 protected:
     void initScene();     // 初始化主界面,绘制界面初始化回调函数
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
@@ -40,6 +41,8 @@ private:
     LoginContext* m_login_page = nullptr;
     RegisterContext* m_register_page = nullptr;
     ServerConfig* m_serverconf_page = nullptr;
+
+    InfoContext m_info;
 
 signals:
 };
