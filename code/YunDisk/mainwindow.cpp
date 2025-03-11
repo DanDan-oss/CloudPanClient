@@ -1,6 +1,7 @@
+#include "common/global.h"
 #include "mainwindow.h"
 #include <QString>
-#include "macro.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

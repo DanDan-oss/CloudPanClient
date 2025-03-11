@@ -1,6 +1,6 @@
 #include "logincontext.h"
 #include "login.h"
-#include "infocontext.h"
+#include "common/loginfo.h"
 
 LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}

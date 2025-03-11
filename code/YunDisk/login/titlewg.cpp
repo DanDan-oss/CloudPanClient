@@ -1,6 +1,6 @@
+#include "common/global.h"
 #include "titlewg.h"
 #include "login.h"
-#include "macro.h"
 #include <QLabel>
 #include <QToolButton>
 #include <QMouseEvent>

@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
-#include "infocontext.h"
+#include "common/loginfo.h"
 
 // 注册界面
 class RegisterContext  : public QWidget

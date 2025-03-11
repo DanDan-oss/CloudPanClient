@@ -1,10 +1,15 @@
 #include "serverconfig.h"
+#include "login.h"
+#include "common/global.h"
+#include <QRegularExpression>
+#include <QMessageBox>
 
 ServerConfig::ServerConfig(const QRect &rect, QWidget *parent)
     : QWidget{parent}
 {
     this->initScene(rect);
     this->initShowData();
+    connect(&this->m_button_ok, &QToolButton::clicked, this, &ServerConfig::on_button_ok_clicked);
 }
 
 ServerConfig::~ServerConfig()
@@ -50,6 +55,41 @@ void ServerConfig::initScene(const QRect &rect)
 void ServerConfig::initShowData()
 {
     this->m_server_address.setFocus();
-    this->m_server_address.setText(this->m_server_info.ip);
-    this->m_server_port.setText(this->m_server_info.port== true ? "true": "false");
+    Login* login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+    const ServerInfo& server_info = login->getInfoContext().getServerInfo();
+    this->m_server_address.setText(server_info.ip);
+    this->m_server_port.setText(QString::number(server_info.port));
+}
+
+void ServerConfig::on_button_ok_clicked()
+{
+    QString ip = this->m_server_address.text();
+    QString port = this->m_server_port.text();
+    Login* login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+
+    // 判断IP
+    QRegularExpression regexp(IP_REG);
+    if(!regexp.match(ip).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "您输入的IP格式不正确, 请重新输入!");
+        return;
+    }
+    regexp.setPattern(PORT_REG);
+    if(!regexp.match(port).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "您输入的端口格式不正确, 请重新输入!");
+        return;
+    }
+    login->getInfoContext().setServerInfo(ip, port.toInt());
+    login->getInfoContext().WriteConfContext();
+    QMessageBox::information(this, "成功", "保存成功", QMessageBox::Yes);
+    emit login->closeWindow(login);
 }

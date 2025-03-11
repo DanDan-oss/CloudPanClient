@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
-#include "infocontext.h"
+#include "common/loginfo.h"
 
 // 服务器配置界面
 class ServerConfig  : public QWidget
@@ -25,10 +25,10 @@ private:
     QLineEdit m_server_port;       // 服务器端口
     QToolButton m_button_ok;      // 注册按钮
 
-    ServerInfo m_server_info;
-
 signals:
 
+private slots:
+    void on_button_ok_clicked();
 };
 
 #endif // SERVERCONFIG_H

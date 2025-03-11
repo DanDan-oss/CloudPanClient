@@ -14,7 +14,7 @@ CONFIG += c++17
 
 
 SOURCES += \
-    login/infocontext.cpp \
+    common/loginfo.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -24,13 +24,13 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    login/infocontext.h \
+    common/global.h \
+    common/loginfo.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \
     login/serverconfig.h \
     login/titlewg.h \
-    macro.h \
     mainwindow.h
 
 TRANSLATIONS += \

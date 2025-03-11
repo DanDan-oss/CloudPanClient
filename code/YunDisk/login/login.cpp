@@ -1,5 +1,5 @@
+#include "common/global.h"
 #include "login.h"
-#include "macro.h"
 #include <QLabel>
 #include <QMovie>
 #include <QPainter>
@@ -111,7 +111,7 @@ void Login::showMinWindow(Login *login)
     window->showMinimized();
 }
 
-const InfoContext& Login::getInfoContext() const
+InfoContext& Login::getInfoContext()
 {
     return this->m_info;
 }
@@ -125,9 +125,3 @@ void Login::onLoginButtonClicked()
 {
 
 }
-
-void Login::onServerConfButtonClicked()
-{
-
-}
-
