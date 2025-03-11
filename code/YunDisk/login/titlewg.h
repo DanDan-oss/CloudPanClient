@@ -25,7 +25,10 @@ private:
     QToolButton m_button_mix;
     QToolButton m_button_close;
 signals:
-    void CloseWindow();
+private slots:
+    void on_button_close_clicked();
+    void on_button_set_clicked();
+    void on_button_mix_clicked();
 };
 
 

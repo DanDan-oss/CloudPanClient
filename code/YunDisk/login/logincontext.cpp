@@ -7,18 +7,18 @@ LoginContext::LoginContext(const QRect &rect, QWidget *parent)
 {
     this->initScene(rect);
     this->initShowData();
-    connect(&this->m_button_register, &QToolButton::clicked, this, [=]()
-    {
-        // LoginContext -->m_stacked_widget-->Login
-        Login* login = (Login*)(this->parent()->parent());
-        // 切换到注册界
-        emit login->showRegisterPage(login);
-    });
+    connect(&this->m_button_register, &QToolButton::clicked, this, &LoginContext::on_button_registe_clicked);
 }
 
 LoginContext::~LoginContext()
 {
 
+}
+
+void LoginContext::on_button_registe_clicked()
+{
+    Login* login = (Login*)(this->parent()->parent());
+    emit login->showRegisterPage();
 }
 
 void LoginContext::initScene(const QRect &rect)

@@ -10,25 +10,9 @@ TitleWg::TitleWg(const QRect& rect, QWidget *parent)
 {
     this->initScene(rect);
 
-    connect(&this->m_button_close, &QToolButton::clicked, [=]()
-    {   // 关闭按钮被点击
-        Login* login = (Login*)(this->parent());
-        emit login->closeWindow(login);
-    });
-
-    connect(&this->m_button_set, &QToolButton::clicked, this, [=]()
-    {   // 服务器设置按钮被点击(右上角的小螺丝) 切换到注册界
-
-        Login* login = (Login*)(this->parent());
-        emit login->showServerConfPage(login);
-        // 发送信号给父窗口切换到服务器设置窗口
-    });
-
-    connect(&this->m_button_mix, &QToolButton::clicked, [=]()
-    {   // 窗口最小化按钮被点击
-        Login* login = (Login*)(this->parent());
-        emit login->showMinWindow(login);
-    });
+    connect(&this->m_button_close, &QToolButton::clicked, this, &TitleWg::on_button_close_clicked);
+    connect(&this->m_button_set, &QToolButton::clicked, this, &TitleWg::on_button_set_clicked);
+    connect(&this->m_button_mix, &QToolButton::clicked, this, &TitleWg::on_button_mix_clicked);
 }
 
 TitleWg::~TitleWg()
@@ -87,6 +71,26 @@ void TitleWg::initScene(const QRect &rect)
     //this->setStyleSheet("border: 2px solid #ff0000;");
 }
 
+void TitleWg::on_button_close_clicked()
+{
+    // 关闭按钮被点击
+    Login* login = (Login*)(this->parent());
+    emit login->closeWindow();
+}
+
+void TitleWg::on_button_set_clicked()
+{
+    // 服务器设置按钮被点击(右上角的小螺丝) 切换到注册界
+    Login* login = (Login*)(this->parent());
+    emit login->showServerConfPage();
+}
+
+void TitleWg::on_button_mix_clicked()
+{
+    // 窗口最小化按钮被点击
+    Login* login = (Login*)(this->parent());
+    emit login->showMinWindow();
+}
 
 void TitleWg::mouseMoveEvent(QMouseEvent *event)
 {

@@ -24,10 +24,10 @@ protected:
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
 
 public slots:
-    void showRegisterPage(Login* login);      // 显示注册窗口
-    void showServerConfPage(Login* login);    // 显示配置服务器窗口
-    void closeWindow(Login* login);            //
-    void showMinWindow(Login* login);            // 关闭窗口按钮被点击
+    void showRegisterPage();      // 显示注册窗口
+    void showServerConfPage();    // 显示配置服务器窗口
+    void closeWindow();            //
+    void showMinWindow();            // 关闭窗口按钮被点击
 
 private slots:
 

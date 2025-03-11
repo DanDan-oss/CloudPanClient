@@ -91,5 +91,5 @@ void ServerConfig::on_button_ok_clicked()
     login->getInfoContext().setServerInfo(ip, port.toInt());
     login->getInfoContext().WriteConfContext();
     QMessageBox::information(this, "成功", "保存成功", QMessageBox::Yes);
-    emit login->closeWindow(login);
+    emit login->closeWindow();
 }

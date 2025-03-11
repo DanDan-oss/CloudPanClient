@@ -26,6 +26,8 @@ private:
     QCheckBox m_checkpass;      // 是否记住密码
     QToolButton m_button_register;      // 注册按钮
     QToolButton m_button_login;      // 登录按钮
+private slots:
+    void on_button_registe_clicked();
 };
 
 #endif // LOGINCONTEXT_H

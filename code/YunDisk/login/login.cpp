@@ -75,39 +75,39 @@ void Login::paintEvent(QPaintEvent* event)
     return QWidget::paintEvent(event);
 }
 
-void Login::showRegisterPage(Login* login)
+void Login::showRegisterPage()
 {
-    login->m_stacked_widget.setCurrentWidget(login->m_register_page);
-    ((RegisterContext*)login->m_register_page)->initShowData();
+    this->m_stacked_widget.setCurrentWidget(this->m_register_page);
+    this->m_register_page->initShowData();
 }
 
-void Login::showServerConfPage(Login *login)
+void Login::showServerConfPage()
 {
-    login->m_stacked_widget.setCurrentWidget(login->m_serverconf_page);
-    ((ServerConfig*)(login->m_serverconf_page))->initShowData();
+    this->m_stacked_widget.setCurrentWidget(this->m_serverconf_page);
+    this->m_serverconf_page->initShowData();
 }
 
-void Login::closeWindow(Login *login)
+void Login::closeWindow()
 {
-    QWidget* pqwCurrentWidget= login->m_stacked_widget.currentWidget();
-    QMainWindow* window=(QMainWindow*)login->parent();
+    QWidget* pqwCurrentWidget= this->m_stacked_widget.currentWidget();
+    QMainWindow* window=(QMainWindow*)this->parent();
 
-    if(pqwCurrentWidget == login->m_register_page || pqwCurrentWidget == login->m_serverconf_page)
+    if(pqwCurrentWidget == this->m_register_page || pqwCurrentWidget ==this->m_serverconf_page)
     {   // 当前在 注册窗口 或者 服务器配置窗口 点击关闭按钮,返回登录主界面
         this->m_stacked_widget.setCurrentWidget(this->m_login_page);
         ((LoginContext*)this->m_login_page)->initShowData();
         return;
     }
-    if(pqwCurrentWidget == login->m_login_page)
+    if(pqwCurrentWidget == this->m_login_page)
     {   // 当前在登录窗口,直接关闭
         window->close();
         return;
     }
 }
 
-void Login::showMinWindow(Login *login)
+void Login::showMinWindow()
 {
-    QMainWindow* window=(QMainWindow*)login->parent();
+    QMainWindow* window=(QMainWindow*)this->parent();
     window->showMinimized();
 }
 
