@@ -29,14 +29,15 @@ private:
     QLineEdit m_nicktext;      // 用户昵称框
     QLineEdit m_passtext;      // 用户密码框
     QLineEdit m_confirm_text;      // 确定密码框
-    QLineEdit m_phone_text;      // 手机密码框
-    QLineEdit m_email_text;      // 邮箱框
+    QLineEdit m_phone_text;      // 手机信息框
+    QLineEdit m_email_text;      // 邮箱信息框
     QToolButton m_button_register;      // 注册按钮
 
     RegisterInfo m_register_info;
 
 signals:
-
+private slots:
+    void on_button_registe_clicked();
 };
 
 #endif // REGISTERCONTEXT_H

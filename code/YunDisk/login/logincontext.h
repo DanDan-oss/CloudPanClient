@@ -28,6 +28,8 @@ private:
     QToolButton m_button_login;      // 登录按钮
 private slots:
     void on_button_registe_clicked();
+    void on_button_login_clicked();
+
 };
 
 #endif // LOGINCONTEXT_H

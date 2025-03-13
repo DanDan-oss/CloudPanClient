@@ -1,6 +1,9 @@
 #include "logincontext.h"
 #include "login.h"
 #include "common/loginfo.h"
+#include "common/global.h"
+#include <QRegularExpression>
+#include <QMessageBox>
 
 LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -19,6 +22,42 @@ void LoginContext::on_button_registe_clicked()
 {
     Login* login = (Login*)(this->parent()->parent());
     emit login->showRegisterPage();
+}
+
+void LoginContext::on_button_login_clicked()
+{
+    Login* login = nullptr;
+    QString user = this->m_usertext.text();
+    QString pass = this->m_passtext.text();
+    LoginInfo info = {0};
+
+    QRegularExpression regexp(USER_REG);
+    if(!regexp.match(user).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "用户名格式不正确");
+        this->m_usertext.clear();
+        this->m_usertext.setFocus();
+        return;
+    }
+    regexp.setPattern(PASSWD_REG);
+    if(!regexp.match(pass).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "密码格式不正确");
+        this->m_passtext.clear();
+        this->m_passtext.setFocus();
+        return;
+    }
+    if(!this->m_checkpass.isChecked())
+            return;
+
+    login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+    //login->getInfoContext().setLoginInfo(info);
+    //login->getInfoContext().WriteConfContext();
+
 }
 
 void LoginContext::initScene(const QRect &rect)

@@ -42,6 +42,7 @@ public:
     const ServerInfo& getServerInfo() const;
     bool setServerInfo(const ServerInfo& info);
     bool setServerInfo(const QString& ip, const int port);
+    bool setLoginInfo(const LoginInfo& info);
 private:
 
 signals:

@@ -1,5 +1,7 @@
 #include "registercontext.h"
-
+#include "common/global.h"
+#include <QRegularExpression>
+#include <QMessageBox>
 
 RegisterContext::RegisterContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -79,5 +81,68 @@ void RegisterContext::initScene(const QRect &rect)
 void RegisterContext::initShowData()
 {
     this->m_usertext.setFocus();
+
+}
+
+void RegisterContext::on_button_registe_clicked()
+{
+    QString userName = this->m_usertext.text();
+    QString nickName = this->m_nicktext.text();
+    QString firstPwd = this->m_passtext.text();
+    QString surePwd = this->m_confirm_text.text();
+    QString phone = this->m_phone_text.text();
+    QString email = this->m_email_text.text();
+
+    // 密码校验
+    QRegularExpression regexp(PASSWD_REG);
+    if(!regexp.match(firstPwd).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "密码格式不正确");
+        this->m_passtext.clear();
+        this->m_confirm_text.clear();
+        this->m_passtext.setFocus();
+        return;
+    }
+    if(firstPwd != surePwd)
+    {
+        QMessageBox::warning(this, "警告", "两次输入的密码不匹配, 请重新输入");
+        this->m_passtext.clear();
+        this->m_confirm_text.clear();
+        this->m_passtext.setFocus();
+    }
+    // 账户校验
+    regexp.setPattern(USER_REG);
+    if(!regexp.match(userName).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "用户名格式不正确");
+        this->m_usertext.clear();
+        this->m_usertext.setFocus();
+        return;
+    }
+    if(!regexp.match(nickName).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "昵称格式不正确");
+        this->m_nicktext.clear();
+        this->m_nicktext.setFocus();
+        return;
+    }
+    // 手机校验
+    regexp.setPattern(PHONE_REG);
+    if(!regexp.match(phone).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "手机号码格式不正确");
+        this->m_phone_text.clear();
+        this->m_phone_text.setFocus();
+        return;
+    }
+    // 邮箱校验
+    regexp.setPattern(EMAIL_REG);
+    if(!regexp.match(email).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "邮箱码格式不正确");
+        this->m_email_text.clear();
+        this->m_email_text.setFocus();
+        return;
+    }
 
 }

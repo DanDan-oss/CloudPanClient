@@ -78,3 +78,11 @@ bool InfoContext::setServerInfo(const QString &ip, const int port)
     return true;
 }
 
+bool InfoContext::setLoginInfo(const LoginInfo &info)
+{
+    this->m_login_info.username = info.username;
+    this->m_login_info.password = info.password;
+    this->m_login_info.aeskey = info.aeskey;
+    this->m_login_info.savepass = info.savepass;
+    return true;
+}
