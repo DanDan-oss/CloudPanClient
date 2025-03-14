@@ -8,13 +8,15 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-#LIBS += -L"D:/OpenSSL/lib" -llibcrypto # 库文件名及其路径
-#INCLUDEPATH += $$quote(D:/OpenSSL/include/) #头文件路径
-#INCLUDEPATH += D:/OpenSSL/include/
+LIBS += -L"F:\Microsoft Visual Studio\OpenSSL-Win64\lib\VC\x64\MD" # -llibcrypto # 库文件名及其路径
+LIBS += -L"F:\Microsoft Visual Studio\OpenSSL-Win64\lib\VC\x64\MT" -llibcrypto -llibssl # 库文件名及其路径
+#INCLUDEPATH += $$quote("F:\Microsoft Visual Studio\OpenSSL-Win64\include") #头文件路径
+INCLUDEPATH += "F:\Microsoft Visual Studio\OpenSSL-Win64\include"
 
 
 SOURCES += \
     common/loginfo.cpp \
+    common/cryptutil.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -26,6 +28,7 @@ SOURCES += \
 HEADERS += \
     common/global.h \
     common/loginfo.h \
+    common/cryptutil.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \
@@ -33,6 +36,7 @@ HEADERS += \
     login/titlewg.h \
     mainwindow.h
 
+# lrelease YunDisk_zh_CN.ts -qm YunDisk_zh_CN.qm
 TRANSLATIONS += \
     YunDisk_zh_CN.ts
 CONFIG += lrelease

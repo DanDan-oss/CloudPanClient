@@ -42,6 +42,7 @@ public:
     bool setServerInfo(const ServerInfo& info);
     bool setServerInfo(const QString& ip, const int port);
     bool setLoginInfo(const LoginInfo& info);
+
 private:
 
 signals:
@@ -50,6 +51,10 @@ private:
     LoginInfo m_login_info;
     RegisterInfo m_register_info;
     ServerInfo m_server_info;
+
+    static QString DEFAULT_DES_KEY;
+    static QString DEFAULT_AES_KEY;
+    static QString DEFAULT_AES_IV;
 };
 
 #endif // LOGIN_INFO_H
