@@ -11,52 +11,11 @@ LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     this->initScene(rect);
     this->initShowData();
     connect(&this->m_button_register, &QToolButton::clicked, this, &LoginContext::on_button_registe_clicked);
+    connect(&this->m_button_login,  &QToolButton::clicked, this, &LoginContext::on_button_login_clicked);
 }
 
 LoginContext::~LoginContext()
 {
-
-}
-
-void LoginContext::on_button_registe_clicked()
-{
-    Login* login = (Login*)(this->parent()->parent());
-    emit login->showRegisterPage();
-}
-
-void LoginContext::on_button_login_clicked()
-{
-    Login* login = nullptr;
-    QString user = this->m_usertext.text();
-    QString pass = this->m_passtext.text();
-    LoginInfo info = {0};
-
-    QRegularExpression regexp(USER_REG);
-    if(!regexp.match(user).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "用户名格式不正确");
-        this->m_usertext.clear();
-        this->m_usertext.setFocus();
-        return;
-    }
-    regexp.setPattern(PASSWD_REG);
-    if(!regexp.match(pass).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "密码格式不正确");
-        this->m_passtext.clear();
-        this->m_passtext.setFocus();
-        return;
-    }
-    if(!this->m_checkpass.isChecked())
-            return;
-
-    login = dynamic_cast<Login*>(this->parent());
-    if(!login)
-        login = dynamic_cast<Login*>(this->parent()->parent());
-    if(!login)
-        return;
-    //login->getInfoContext().setLoginInfo(info);
-    //login->getInfoContext().WriteConfContext();
 
 }
 
@@ -123,14 +82,59 @@ void LoginContext::initShowData()
     if(!login)
         return;
     const LoginInfo& login_info = login->getInfoContext().getLoginInfo();
+    if(!login_info.username.length() ||  !login_info.password.length() )
+        return;
+
     this->m_usertext.setText(login_info.username);
     this->m_passtext.setText(login_info.password);
-    this->m_checkpass.setCheckState(login_info.savepass? Qt::Checked :Qt::Unchecked);
+    this->m_checkpass.setChecked(true);
+}
+
+
+void LoginContext::on_button_registe_clicked()
+{
+    Login* login = (Login*)(this->parent()->parent());
+    emit login->showRegisterPage();
+}
+
+void LoginContext::on_button_login_clicked()
+{
+    Login* login = nullptr;
+    QString user = this->m_usertext.text();
+    QString pass = this->m_passtext.text();
+    LoginInfo info = {0};
+
+    QRegularExpression regexp(USER_REG);
+    if(!regexp.match(user).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "用户名格式不正确");
+        this->m_usertext.clear();
+        this->m_usertext.setFocus();
+        return;
+    }
+    regexp.setPattern(PASSWD_REG);
+    if(!regexp.match(pass).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "密码格式不正确");
+        this->m_passtext.clear();
+        this->m_passtext.setFocus();
+        return;
+    }
+    if(!this->m_checkpass.isChecked())
+        return;
+
+    login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+    info.username = this->m_usertext.text();
+    info.password = this->m_passtext.text();
+    login->getInfoContext().setLoginInfo(info);
+    login->getInfoContext().WriteConfContext();
 }
 
 void LoginContext::paintEvent(QPaintEvent* event)
 {
-
-
     return QWidget::paintEvent(event);
 }

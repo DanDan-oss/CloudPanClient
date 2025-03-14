@@ -1,5 +1,6 @@
 #include "registercontext.h"
 #include "common/global.h"
+#include "login.h"
 #include <QRegularExpression>
 #include <QMessageBox>
 
@@ -9,6 +10,7 @@ RegisterContext::RegisterContext(const QRect &rect, QWidget *parent)
 {
     this->initScene(rect);
     this->initShowData();
+    connect(&this->m_button_register, &QToolButton::clicked, this, &RegisterContext::on_button_registe_clicked);
 }
 
 RegisterContext::~RegisterContext()
@@ -92,6 +94,8 @@ void RegisterContext::on_button_registe_clicked()
     QString surePwd = this->m_confirm_text.text();
     QString phone = this->m_phone_text.text();
     QString email = this->m_email_text.text();
+    Login* login = nullptr;
+    LoginInfo info = {0};
 
     // 密码校验
     QRegularExpression regexp(PASSWD_REG);
@@ -109,6 +113,7 @@ void RegisterContext::on_button_registe_clicked()
         this->m_passtext.clear();
         this->m_confirm_text.clear();
         this->m_passtext.setFocus();
+        return;
     }
     // 账户校验
     regexp.setPattern(USER_REG);
@@ -144,5 +149,13 @@ void RegisterContext::on_button_registe_clicked()
         this->m_email_text.setFocus();
         return;
     }
-
+    login = dynamic_cast<Login*>(this->parent());
+    if(!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if(!login)
+        return;
+    info.username = this->m_usertext.text();
+    info.password = this->m_passtext.text();
+    login->getInfoContext().setLoginInfo(info);
+    login->getInfoContext().WriteConfContext();
 }

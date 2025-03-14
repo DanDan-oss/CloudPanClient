@@ -30,9 +30,6 @@ public slots:
     void showMinWindow();            // 关闭窗口按钮被点击
 
 private slots:
-
-    void onRegisterButtonClicked();      // 注册按钮被点击
-    void onLoginButtonClicked();         // 登录按钮被点击
 private:
     QStackedWidget m_stacked_widget;
     TitleWg* m_title_page;

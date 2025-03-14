@@ -115,13 +115,3 @@ InfoContext& Login::getInfoContext()
 {
     return this->m_info;
 }
-
-void Login::onRegisterButtonClicked()
-{
-
-}
-
-void Login::onLoginButtonClicked()
-{
-
-}

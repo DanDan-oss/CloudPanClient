@@ -31,8 +31,6 @@ void InfoContext::readConfContext()
     this->m_login_info.username = config->value("UserInfo/username", "").toString();
     this->m_login_info.password = config->value("UserInfo/password", "").toString();
     this->m_login_info.aeskey = config->value("UserInfo/aes_key", "").toString();
-    tmp=config->value("UserInfo/save_pass", "false").toString();
-    this->m_login_info.savepass = tmp.compare("true", Qt::CaseInsensitive) == 0 ? true : false;
 
     delete config;
 }
@@ -46,7 +44,6 @@ void InfoContext::WriteConfContext()
     config->setValue("UserInfo/username", this->m_login_info.username);
     config->setValue("UserInfo/password", this->m_login_info.password);
     config->setValue("UserInfo/aes_key", this->m_login_info.aeskey);
-    config->setValue("UserInfo/save_pass", this->m_login_info.savepass == true ? "true": "false");
 
     delete config;
 }
@@ -83,6 +80,5 @@ bool InfoContext::setLoginInfo(const LoginInfo &info)
     this->m_login_info.username = info.username;
     this->m_login_info.password = info.password;
     this->m_login_info.aeskey = info.aeskey;
-    this->m_login_info.savepass = info.savepass;
     return true;
 }

@@ -9,7 +9,6 @@ struct  LoginInfo
     QString username;
     QString password;
     QString aeskey;
-    bool savepass = false;
 };
 
 struct  RegisterInfo
