@@ -1,6 +1,15 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#ifdef _DEBUG
+#define WinPrintA qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] "
+#define WinPrintW qDebug() << "[ " << __FILE__ << ":"  << __LINE__ << " ] "
+#else
+#define WinPrintA OutputDebugStringFA
+#define WinPrintW OutputDebugStringFW
+#endif
+
+
 // 正则表达式
 #define USER_REG        "^[a-zA-Z\\d_@#-\*]\{3,16\}$"
 #define PASSWD_REG      "^[a-zA-Z\\d_@#-\*]\{6,18\}$"
@@ -15,5 +24,9 @@
 #define WINDOW_ICON_PATH ":/images/favicon.ico"
 #define WINDOW_BACKUP_PATH ":/images/login2.jpg"
 #define WINDOW_LOGO_PATH ":/images/logo.jpg"
+
+#define CONFFILE        "conf/cfg.json"     // 配置文件
+#define RECORDDIR       "conf/record/"      // 用户文件上传下载记录
+#define FILETYPEDIR     "conf/fileType"     // 存放文件类型图片目录
 
 #endif // GLOBAL_H

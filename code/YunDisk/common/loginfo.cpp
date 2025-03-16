@@ -39,10 +39,8 @@ void InfoContext::readConfContext()
 
     if (logininfo.aeskey.size() == 16 || logininfo.aeskey.size() == 32 && logininfo.aeskey.size()== 24)
     {
-        //logininfo.username = CryptUtil::aesDecryptText(logininfo.username, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
-        //logininfo.password = CryptUtil::aesDecryptText(logininfo.password, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
-        logininfo.username = CryptUtil::aesDecryptText(logininfo.username);
-        logininfo.password = CryptUtil::aesDecryptText(logininfo.password);
+        logininfo.username = CryptUtil::aesDecryptText(logininfo.username, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
+        logininfo.password = CryptUtil::aesDecryptText(logininfo.password, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
     }
 
     this->m_login_info.username = logininfo.username;
@@ -63,10 +61,8 @@ void InfoContext::WriteConfContext()
 
     if (!(logininfo.aeskey.size() == 16 || logininfo.aeskey.size() == 32 && logininfo.aeskey.size() == 24))
         logininfo.aeskey = InfoContext::DEFAULT_AES_KEY;
-    //logininfo.username = CryptUtil::aesEncryptText(logininfo.username, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
-    //logininfo.password = CryptUtil::aesEncryptText(logininfo.password, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
-    logininfo.username = CryptUtil::aesEncryptText(logininfo.username);
-    logininfo.password = CryptUtil::aesEncryptText(logininfo.password);
+    logininfo.username = CryptUtil::aesEncryptText(logininfo.username, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
+    logininfo.password = CryptUtil::aesEncryptText(logininfo.password, logininfo.aeskey, InfoContext::DEFAULT_AES_IV);
 
     config->setValue("ServerConf/ip_addr", this->m_server_info.ip);
     config->setValue("ServerConf/port", this->m_server_info.port);
@@ -105,11 +101,19 @@ bool InfoContext::setServerInfo(const QString &ip, const int port)
     return true;
 }
 
+
+bool InfoContext::setLoginInfo(const QString& username, const QString& password, const QString& aeskey)
+{
+
+    this->m_login_info.username = username;
+    this->m_login_info.password = password;
+    return true;
+}
+
 bool InfoContext::setLoginInfo(const LoginInfo &info)
 {
     this->m_login_info.username = info.username;
     this->m_login_info.password = info.password;
-    this->m_login_info.aeskey = info.aeskey;
     return true;
 }
 

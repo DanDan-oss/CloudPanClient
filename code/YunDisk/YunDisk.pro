@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,6 +17,7 @@ INCLUDEPATH += "F:\Microsoft Visual Studio\OpenSSL-Win64\include"
 SOURCES += \
     common/loginfo.cpp \
     common/cryptutil.cpp \
+    common/network_manager.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     common/global.h \
     common/loginfo.h \
     common/cryptutil.h \
+    common/network_manager.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \

@@ -15,8 +15,8 @@ struct  RegisterInfo
 {
     QString username;
     QString nickname;
-    QString password;
-    QString re_password;
+    QString firstpwd;
+    QString surepwd;
     QString phone;
     QString email;
 };
@@ -42,6 +42,7 @@ public:
     bool setServerInfo(const ServerInfo& info);
     bool setServerInfo(const QString& ip, const int port);
     bool setLoginInfo(const LoginInfo& info);
+    bool setLoginInfo(const QString& username, const QString& password, const QString& aeskey = InfoContext::DEFAULT_AES_IV);
 
 private:
 

@@ -17,6 +17,9 @@ public:
     void initScene(const QRect &rect);     // 初始化主界面
     void initShowData();                    // 界面显示数据
 private:
+    bool sendRegisterMessage(const RegisterInfo& info);     // 使用HTTP发送注册消息
+    QByteArray setRegisterJson(const RegisterInfo& info);   // 设置注册用户信息的json包
+private:
     QLabel m_title;      // 用户注册标签
     QLabel m_username;      // 用户账户标签
     QLabel m_nickname;      // 用户昵称标签
@@ -33,7 +36,6 @@ private:
     QLineEdit m_email_text;      // 邮箱信息框
     QToolButton m_button_register;      // 注册按钮
 
-    RegisterInfo m_register_info;
 
 signals:
 private slots:

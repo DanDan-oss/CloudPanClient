@@ -1,8 +1,13 @@
 #include "registercontext.h"
 #include "common/global.h"
+#include "common/network_manager.h"
 #include "login.h"
 #include <QRegularExpression>
 #include <QMessageBox>
+#include <QJsonDocument>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+
 
 RegisterContext::RegisterContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -83,23 +88,118 @@ void RegisterContext::initScene(const QRect &rect)
 void RegisterContext::initShowData()
 {
     this->m_usertext.setFocus();
+}
 
+bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
+{
+    Login* login = nullptr;
+    QNetworkAccessManager& manager = NetworkManager::getNetManager();
+    QByteArray array = setRegisterJson(info);
+    WinPrintA << "register json data" << array;
+
+
+    login = dynamic_cast<Login*>(this->parent());
+    if (!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if (!login)
+        return false;
+    const ServerInfo& server = login->getInfoContext().getServerInfo();
+
+    // 设置连接服务器要发送的url
+    QNetworkRequest request;
+    request.setUrl(QUrl(QString("http://%1:%2/reg").arg(server.ip).arg(server.port)));
+    // 设置请求头
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+    request.setHeader(QNetworkRequest::ContentLengthHeader, array.size());
+    // 设置请求体
+    //QNetworkReply* reply 
+    QNetworkReply* reply = manager.post(request, array);
+
+    // 判断请求是否被成功处理
+    connect(reply, &QNetworkReply::readyRead, [=](){
+        /*
+        注册 - server端返回的json格式数据：
+            成功:         {"code":"002"}
+            该用户已存在：  {"code":"003"}
+            失败:         {"code":"004"}
+        */
+        QByteArray jsonData = reply->readAll();
+        QString recvCode = NetworkManager::getServerRecvCode(jsonData);
+        if ("002" == recvCode)
+        {   // 注册成功
+            QMessageBox::information(this, "注册成功", "注册成功，请登录");
+            WinPrintA << "user " << info.username << " create success";
+            login->getInfoContext().setLoginInfo(info.username, info.firstpwd);
+            login->getInfoContext().WriteConfContext();
+            emit login->closeWindow();
+        }
+        else if ("003" == recvCode)
+        {
+            QMessageBox::warning(this, "注册失败", QString("[%1]该用户已经存在!!!").arg(info.username));
+            WinPrintA << "user " << info.username << " create faild, user existence";
+        }else
+        {
+            QMessageBox::warning(this, "注册失败", "注册失败！！！");
+            WinPrintA << "user " << info.username << " create faild!";
+        }
+        // delete reply;  // delete reply释放了 reply，但 Qt仍然可能在后续信号中访问 reply导致程序崩溃如 finished
+        reply->deleteLater();
+        WinPrintA << "user " << info.username << " create faild!";
+    });
+
+    /*
+    connect(reply, &QNetworkReply::finished,[=]() {
+        reply->deleteLater();
+    });
+    */
+    return true;
+}
+
+QByteArray RegisterContext::setRegisterJson(const RegisterInfo& info)
+{
+    QMap<QString, QVariant> reg;
+    reg.insert("userName", info.username);
+    reg.insert("nickName", info.nickname);
+    reg.insert("firstPwd", info.firstpwd);
+    reg.insert("phone", info.phone);
+    reg.insert("email", info.email);
+
+    /*json数据如下
+        {
+            userName:xxxx,
+            nickName:xxx,
+            firstPwd:xxx,
+            phone:xxx,
+            email:xxx
+        }
+    */
+
+    QJsonDocument jsonDocument = QJsonDocument::fromVariant(reg);
+    if (jsonDocument.isNull())
+    {
+        WinPrintA << " jsonDocument.isNull() ";
+        return "";
+    }
+    //WinPrintA << jsonDocument.toJson().data();
+
+    return jsonDocument.toJson();
 }
 
 void RegisterContext::on_button_registe_clicked()
 {
-    QString userName = this->m_usertext.text();
-    QString nickName = this->m_nicktext.text();
-    QString firstPwd = this->m_passtext.text();
-    QString surePwd = this->m_confirm_text.text();
-    QString phone = this->m_phone_text.text();
-    QString email = this->m_email_text.text();
-    Login* login = nullptr;
-    LoginInfo info = {0};
+
+    RegisterInfo info = { 0 };
+
+    info.username = this->m_usertext.text();
+    info.nickname = this->m_nicktext.text();
+    info.firstpwd = this->m_passtext.text();
+    info.surepwd = this->m_confirm_text.text();
+    info.phone = this->m_phone_text.text();
+    info.email = this->m_email_text.text();
 
     // 密码校验
     QRegularExpression regexp(PASSWD_REG);
-    if(!regexp.match(firstPwd).hasMatch())
+    if(!regexp.match(info.firstpwd).hasMatch())
     {
         QMessageBox::warning(this, "警告", "密码格式不正确");
         this->m_passtext.clear();
@@ -107,7 +207,7 @@ void RegisterContext::on_button_registe_clicked()
         this->m_passtext.setFocus();
         return;
     }
-    if(firstPwd != surePwd)
+    if(info.surepwd != info.firstpwd)
     {
         QMessageBox::warning(this, "警告", "两次输入的密码不匹配, 请重新输入");
         this->m_passtext.clear();
@@ -117,14 +217,14 @@ void RegisterContext::on_button_registe_clicked()
     }
     // 账户校验
     regexp.setPattern(USER_REG);
-    if(!regexp.match(userName).hasMatch())
+    if(!regexp.match(info.username).hasMatch())
     {
         QMessageBox::warning(this, "警告", "用户名格式不正确");
         this->m_usertext.clear();
         this->m_usertext.setFocus();
         return;
     }
-    if(!regexp.match(nickName).hasMatch())
+    if(!regexp.match(info.nickname).hasMatch())
     {
         QMessageBox::warning(this, "警告", "昵称格式不正确");
         this->m_nicktext.clear();
@@ -133,7 +233,7 @@ void RegisterContext::on_button_registe_clicked()
     }
     // 手机校验
     regexp.setPattern(PHONE_REG);
-    if(!regexp.match(phone).hasMatch())
+    if(!regexp.match(info.phone).hasMatch())
     {
         QMessageBox::warning(this, "警告", "手机号码格式不正确");
         this->m_phone_text.clear();
@@ -142,20 +242,13 @@ void RegisterContext::on_button_registe_clicked()
     }
     // 邮箱校验
     regexp.setPattern(EMAIL_REG);
-    if(!regexp.match(email).hasMatch())
+    if(!regexp.match(info.email).hasMatch())
     {
         QMessageBox::warning(this, "警告", "邮箱码格式不正确");
         this->m_email_text.clear();
         this->m_email_text.setFocus();
         return;
     }
-    login = dynamic_cast<Login*>(this->parent());
-    if(!login)
-        login = dynamic_cast<Login*>(this->parent()->parent());
-    if(!login)
-        return;
-    info.username = this->m_usertext.text();
-    info.password = this->m_passtext.text();
-    login->getInfoContext().setLoginInfo(info);
-    login->getInfoContext().WriteConfContext();
+
+    this->sendRegisterMessage(info);
 }
