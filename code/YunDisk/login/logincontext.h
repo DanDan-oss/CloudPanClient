@@ -6,6 +6,7 @@
 #include <QToolButton>
 #include <QLineEdit>
 #include <QCheckBox>
+#include "common/loginfo.h"
 
 // 登录界面
 class LoginContext  : public QWidget
@@ -17,6 +18,8 @@ public:
     void initShowData();
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
     ~LoginContext();
+private:
+    bool sendLoginMessage(const LoginInfo& info);     // 使用HTTP发送注册消息
 private:
     QLabel m_title;      // 用户登录标签
     QLabel m_username;      // 用户账户标签

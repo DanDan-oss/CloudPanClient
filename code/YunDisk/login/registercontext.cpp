@@ -1,7 +1,7 @@
 #include "registercontext.h"
+#include "login.h"
 #include "common/global.h"
 #include "common/network_manager.h"
-#include "login.h"
 #include <QRegularExpression>
 #include <QMessageBox>
 #include <QJsonDocument>
@@ -94,7 +94,7 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
 {
     Login* login = nullptr;
     QNetworkAccessManager& manager = NetworkManager::getNetManager();
-    QByteArray array = setRegisterJson(info);
+    QByteArray array = NetworkManager::setRegisterJson(info);
     WinPrintA << "register json data" << array;
 
 
@@ -123,8 +123,16 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
             该用户已存在：  {"code":"003"}
             失败:         {"code":"004"}
         */
+        WinPrintA << "====================";
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            WinPrintA << reply->errorString();
+            //释放资源
+            reply->deleteLater();
+            return;
+        }
         QByteArray jsonData = reply->readAll();
-        QString recvCode = NetworkManager::getServerRecvCode(jsonData);
+        QString recvCode = NetworkManager::getRegisterStatus(jsonData);
         if ("002" == recvCode)
         {   // 注册成功
             QMessageBox::information(this, "注册成功", "注册成功，请登录");
@@ -155,35 +163,6 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
     return true;
 }
 
-QByteArray RegisterContext::setRegisterJson(const RegisterInfo& info)
-{
-    QMap<QString, QVariant> reg;
-    reg.insert("userName", info.username);
-    reg.insert("nickName", info.nickname);
-    reg.insert("firstPwd", info.firstpwd);
-    reg.insert("phone", info.phone);
-    reg.insert("email", info.email);
-
-    /*json数据如下
-        {
-            userName:xxxx,
-            nickName:xxx,
-            firstPwd:xxx,
-            phone:xxx,
-            email:xxx
-        }
-    */
-
-    QJsonDocument jsonDocument = QJsonDocument::fromVariant(reg);
-    if (jsonDocument.isNull())
-    {
-        WinPrintA << " jsonDocument.isNull() ";
-        return "";
-    }
-    //WinPrintA << jsonDocument.toJson().data();
-
-    return jsonDocument.toJson();
-}
 
 void RegisterContext::on_button_registe_clicked()
 {

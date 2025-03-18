@@ -1,5 +1,6 @@
 #ifndef NETWORK_MANAGER_H
 #define NETWORK_MANAGER_H
+#include "loginfo.h"
 #include <QApplication>
 #include <QNetworkAccessManager>
 
@@ -8,7 +9,10 @@ class NetworkManager : public QObject
     Q_OBJECT
 public:
     static QNetworkAccessManager& getNetManager();    // 得到http通信类对象
-    static QString getServerRecvCode(QByteArray json);
+    static QStringList getLoginStatus(QByteArray json);
+    static QString getRegisterStatus(QByteArray json);
+    static QByteArray setLoginJson(const LoginInfo& info);   // 设置登录用户信息的json包
+    static QByteArray setRegisterJson(const RegisterInfo& info);  // 设置注册用户信息的json包
 public:
     static QStringList  m_typeList;
 

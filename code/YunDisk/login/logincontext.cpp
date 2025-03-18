@@ -2,8 +2,11 @@
 #include "login.h"
 #include "common/loginfo.h"
 #include "common/global.h"
+#include "common/network_manager.h"
 #include <QRegularExpression>
+#include <QJsonDocument>
 #include <QMessageBox>
+#include <QNetworkReply>
 
 LoginContext::LoginContext(const QRect &rect, QWidget *parent)
     : QWidget{parent}
@@ -18,6 +21,8 @@ LoginContext::~LoginContext()
 {
 
 }
+
+
 
 void LoginContext::initScene(const QRect &rect)
 {
@@ -130,8 +135,68 @@ void LoginContext::on_button_login_clicked()
         return;
     info.username = this->m_usertext.text();
     info.password = this->m_passtext.text();
+
+    // 登录信息写入配置文件cfg.json
     login->getInfoContext().setLoginInfo(info);
     login->getInfoContext().WriteConfContext();
+
+    this->sendLoginMessage(info);
+
+}
+
+bool  LoginContext::sendLoginMessage(const LoginInfo& info)
+{
+    Login* login = nullptr;
+    QNetworkAccessManager& manager = NetworkManager::getNetManager();
+    QByteArray array = NetworkManager::setLoginJson(info);
+    login = dynamic_cast<Login*>(this->parent());
+    if (!login)
+        login = dynamic_cast<Login*>(this->parent()->parent());
+    if (!login)
+        return false;
+    const ServerInfo& server = login->getInfoContext().getServerInfo();
+
+    // 设置连接服务器要发送的url
+    QNetworkRequest request;
+    request.setUrl(QUrl(QString("http://%1:%2/login").arg(server.ip).arg(server.port)));
+    // 请求头信息
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+    request.setHeader(QNetworkRequest::ContentLengthHeader, QVariant(array.size()));
+    // 向服务器发送post请求
+    QNetworkReply* reply = manager.post(request, array);
+    WinPrintA << "post url:" << request.url().toString() << "  post data: " << array;
+
+    // 接收服务器发回的http响应消息
+    // 判断请求是否被成功处理
+    connect(reply, &QNetworkReply::readyRead, [=]() {
+        WinPrintA << "====================";
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            WinPrintA << reply->errorString();
+            //释放资源
+            reply->deleteLater();
+            return;
+        }
+        /*
+            登陆 - 服务器回写的json数据包格式：
+                成功：{"code":"000"}
+                失败：{"code":"001"}
+        */
+        // 将server回写的数据读出
+        QByteArray json = reply->readAll();
+        WinPrintA << "server return value: " << json;
+        QStringList tmpList = NetworkManager::getLoginStatus(json);
+        if (tmpList.at(0) != "000")
+        {
+            QMessageBox::warning(this, "登录失败", "用户名或密码不正确！！！");
+            reply->deleteLater(); //释放资源
+            return;
+        }
+        WinPrintA << "登陆成功";
+        reply->deleteLater(); //释放资源
+    });
+
+
 }
 
 void LoginContext::paintEvent(QPaintEvent* event)
