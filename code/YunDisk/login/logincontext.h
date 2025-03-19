@@ -20,6 +20,9 @@ public:
     ~LoginContext();
 private:
     bool sendLoginMessage(const LoginInfo& info);     // 使用HTTP发送注册消息
+    static QStringList getLoginStatus(QByteArray json); // 获取登录状态
+    static QByteArray setLoginJson(const LoginInfo& info);   // 设置登录用户信息的json包
+
 private:
     QLabel m_title;      // 用户登录标签
     QLabel m_username;      // 用户账户标签

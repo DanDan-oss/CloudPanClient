@@ -2,8 +2,10 @@
 #include "login.h"
 #include "common/global.h"
 #include "common/network_manager.h"
+#include "common/cryptutil.h"
 #include <QRegularExpression>
 #include <QMessageBox>
+#include <QJsonObject>>
 #include <QJsonDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -90,11 +92,79 @@ void RegisterContext::initShowData()
     this->m_usertext.setFocus();
 }
 
+void RegisterContext::on_button_registe_clicked()
+{
+
+    RegisterInfo info = { 0 };
+
+    info.username = this->m_usertext.text();
+    info.nickname = this->m_nicktext.text();
+    info.firstpwd = this->m_passtext.text();
+    info.surepwd = this->m_confirm_text.text();
+    info.phone = this->m_phone_text.text();
+    info.email = this->m_email_text.text();
+
+    // 密码校验
+    QRegularExpression regexp(PASSWD_REG);
+    if (!regexp.match(info.firstpwd).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "密码格式不正确");
+        this->m_passtext.clear();
+        this->m_confirm_text.clear();
+        this->m_passtext.setFocus();
+        return;
+    }
+    if (info.surepwd != info.firstpwd)
+    {
+        QMessageBox::warning(this, "警告", "两次输入的密码不匹配, 请重新输入");
+        this->m_passtext.clear();
+        this->m_confirm_text.clear();
+        this->m_passtext.setFocus();
+        return;
+    }
+    // 账户校验
+    regexp.setPattern(USER_REG);
+    if (!regexp.match(info.username).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "用户名格式不正确");
+        this->m_usertext.clear();
+        this->m_usertext.setFocus();
+        return;
+    }
+    if (!regexp.match(info.nickname).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "昵称格式不正确");
+        this->m_nicktext.clear();
+        this->m_nicktext.setFocus();
+        return;
+    }
+    // 手机校验
+    regexp.setPattern(PHONE_REG);
+    if (!regexp.match(info.phone).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "手机号码格式不正确");
+        this->m_phone_text.clear();
+        this->m_phone_text.setFocus();
+        return;
+    }
+    // 邮箱校验
+    regexp.setPattern(EMAIL_REG);
+    if (!regexp.match(info.email).hasMatch())
+    {
+        QMessageBox::warning(this, "警告", "邮箱码格式不正确");
+        this->m_email_text.clear();
+        this->m_email_text.setFocus();
+        return;
+    }
+
+    this->sendRegisterMessage(info);
+}
+
 bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
 {
     Login* login = nullptr;
     QNetworkAccessManager& manager = NetworkManager::getNetManager();
-    QByteArray array = NetworkManager::setRegisterJson(info);
+    QByteArray array = this->setRegisterJson(info);
     WinPrintA << "register json data" << array;
 
 
@@ -132,7 +202,7 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
             return;
         }
         QByteArray jsonData = reply->readAll();
-        QString recvCode = NetworkManager::getRegisterStatus(jsonData);
+        QString recvCode = this->getRegisterStatus(jsonData);
         if ("002" == recvCode)
         {   // 注册成功
             QMessageBox::information(this, "注册成功", "注册成功，请登录");
@@ -163,71 +233,56 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
     return true;
 }
 
-
-void RegisterContext::on_button_registe_clicked()
+QString RegisterContext::getRegisterStatus(QByteArray json)
 {
+    QJsonParseError error;
 
-    RegisterInfo info = { 0 };
-
-    info.username = this->m_usertext.text();
-    info.nickname = this->m_nicktext.text();
-    info.firstpwd = this->m_passtext.text();
-    info.surepwd = this->m_confirm_text.text();
-    info.phone = this->m_phone_text.text();
-    info.email = this->m_email_text.text();
-
-    // 密码校验
-    QRegularExpression regexp(PASSWD_REG);
-    if(!regexp.match(info.firstpwd).hasMatch())
+    // 将来源数据json转化为JsonDocument
+    // 由QByteArray对象构造一个QJsonDocument对象，用于我们的读写操作
+    QJsonDocument doc = QJsonDocument::fromJson(json, &error);
+    if (error.error != QJsonParseError::NoError)
     {
-        QMessageBox::warning(this, "警告", "密码格式不正确");
-        this->m_passtext.clear();
-        this->m_confirm_text.clear();
-        this->m_passtext.setFocus();
-        return;
-    }
-    if(info.surepwd != info.firstpwd)
-    {
-        QMessageBox::warning(this, "警告", "两次输入的密码不匹配, 请重新输入");
-        this->m_passtext.clear();
-        this->m_confirm_text.clear();
-        this->m_passtext.setFocus();
-        return;
-    }
-    // 账户校验
-    regexp.setPattern(USER_REG);
-    if(!regexp.match(info.username).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "用户名格式不正确");
-        this->m_usertext.clear();
-        this->m_usertext.setFocus();
-        return;
-    }
-    if(!regexp.match(info.nickname).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "昵称格式不正确");
-        this->m_nicktext.clear();
-        this->m_nicktext.setFocus();
-        return;
-    }
-    // 手机校验
-    regexp.setPattern(PHONE_REG);
-    if(!regexp.match(info.phone).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "手机号码格式不正确");
-        this->m_phone_text.clear();
-        this->m_phone_text.setFocus();
-        return;
-    }
-    // 邮箱校验
-    regexp.setPattern(EMAIL_REG);
-    if(!regexp.match(info.email).hasMatch())
-    {
-        QMessageBox::warning(this, "警告", "邮箱码格式不正确");
-        this->m_email_text.clear();
-        this->m_email_text.setFocus();
-        return;
+        WinPrintA << "err = " << error.errorString();
+        return "";
     }
 
-    this->sendRegisterMessage(info);
+    if (doc.isNull() || doc.isEmpty() || false == doc.isObject())
+    {
+        WinPrintA << "doc.isNull() || doc.isEmpty() || doc.isObject() == null";
+        return "";
+
+    }
+    // 取得最外层这个大对象
+    QJsonObject obj = doc.object();
+    return obj.value("code").toString();
+}
+
+QByteArray RegisterContext::setRegisterJson(const RegisterInfo& info)
+{
+    QMap<QString, QVariant> reg;
+    reg.insert("userName", info.username);
+    reg.insert("nickName", info.nickname);
+    reg.insert("firstPwd", CryptUtil::md5Text(info.firstpwd));
+    reg.insert("phone", info.phone);
+    reg.insert("email", info.email);
+
+    /*json数据如下
+        {
+            userName:xxxx,
+            nickName:xxx,
+            firstPwd:xxx,
+            phone:xxx,
+            email:xxx
+        }
+    */
+
+    QJsonDocument jsonDocument = QJsonDocument::fromVariant(reg);
+    if (jsonDocument.isNull())
+    {
+        WinPrintA << " jsonDocument.isNull() ";
+        return "";
+    }
+    //WinPrintA << jsonDocument.toJson().data();
+
+    return jsonDocument.toJson();
 }

@@ -2,8 +2,10 @@
 #include "login.h"
 #include "common/loginfo.h"
 #include "common/global.h"
+#include "common/cryptutil.h"
 #include "common/network_manager.h"
 #include <QRegularExpression>
+#include <QJsonObject>>
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QNetworkReply>
@@ -22,6 +24,11 @@ LoginContext::~LoginContext()
 
 }
 
+
+void LoginContext::paintEvent(QPaintEvent* event)
+{
+    return QWidget::paintEvent(event);
+}
 
 
 void LoginContext::initScene(const QRect &rect)
@@ -148,7 +155,7 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
 {
     Login* login = nullptr;
     QNetworkAccessManager& manager = NetworkManager::getNetManager();
-    QByteArray array = NetworkManager::setLoginJson(info);
+    QByteArray array = this->setLoginJson(info);
     login = dynamic_cast<Login*>(this->parent());
     if (!login)
         login = dynamic_cast<Login*>(this->parent()->parent());
@@ -169,7 +176,6 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
     // 接收服务器发回的http响应消息
     // 判断请求是否被成功处理
     connect(reply, &QNetworkReply::readyRead, [=]() {
-        WinPrintA << "====================";
         if (reply->error() != QNetworkReply::NoError)
         {
             WinPrintA << reply->errorString();
@@ -185,10 +191,10 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
         // 将server回写的数据读出
         QByteArray json = reply->readAll();
         WinPrintA << "server return value: " << json;
-        QStringList tmpList = NetworkManager::getLoginStatus(json);
-        if (tmpList.at(0) != "000")
+        QStringList tmpList = this->getLoginStatus(json);
+        if (tmpList.at(0) != "000" || 0 == tmpList.size())
         {
-            QMessageBox::warning(this, "登录失败", "用户名或密码不正确！！！");
+            QMessageBox::warning(this, "登录失败", tmpList.at(0));
             reply->deleteLater(); //释放资源
             return;
         }
@@ -199,7 +205,63 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
 
 }
 
-void LoginContext::paintEvent(QPaintEvent* event)
+// 得到服务器回复的登陆状态， 状态码返回值为 "000", 或 "001"，还有登陆section
+QStringList LoginContext::getLoginStatus(QByteArray json)
 {
-    return QWidget::paintEvent(event);
+    QJsonParseError error;
+    QStringList list;
+
+    // 将来源数据json转化为JsonDocument
+    // 由QByteArray对象构造一个QJsonDocument对象，用于我们的读写操作
+    QJsonDocument doc = QJsonDocument::fromJson(json, &error);
+
+    if (error.error != QJsonParseError::NoError)
+    {
+        WinPrintA << "err = " << error.errorString();
+        WinPrintA << "err = " << QString(json.data()).indexOf("404 Not Found");
+        if( QString(json.data()).indexOf("404 Not Found"))
+            list.append("服务连接失败");
+        else
+            list.append(error.errorString());
+        return list;
+    }
+
+    if (doc.isNull() || doc.isEmpty() || false == doc.isObject())
+    {
+        WinPrintA << "doc.isNull() || doc.isEmpty() || doc.isObject() == null";
+        list.append("解析服务器返回数据失败");
+        return list;
+    }
+
+    //取得最外层这个大对象
+    QJsonObject obj = doc.object();
+    WinPrintA << "recv server code  " << obj.value("code").toString();
+    //状态码
+    list.append(obj.value("code").toString());
+    //登陆token
+    list.append(obj.value("token").toString());
+    return list;
+}
+
+QByteArray LoginContext::setLoginJson(const LoginInfo& info)
+{
+    QMap<QString, QVariant> login;
+    login.insert("user", info.username);
+    // 密码使用MD5加密
+    login.insert("pwd", CryptUtil::md5Text(info.password));
+
+    /*json数据如下
+        {
+            user:xxxx,
+            pwd:xxx
+        }
+    */
+
+    QJsonDocument jsonDocument = QJsonDocument::fromVariant(login);
+    if (jsonDocument.isNull())
+    {
+        WinPrintA << " jsonDocument.isNull() ";
+        return "";
+    }
+    return jsonDocument.toJson();
 }

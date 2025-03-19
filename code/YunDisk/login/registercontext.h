@@ -18,6 +18,8 @@ public:
     void initShowData();                    // 界面显示数据
 private:
     bool sendRegisterMessage(const RegisterInfo& info);     // 使用HTTP发送注册消息
+    static QString getRegisterStatus(QByteArray json);
+    static QByteArray setRegisterJson(const RegisterInfo& info);  // 设置注册用户信息的json包
 private:
     QLabel m_title;      // 用户注册标签
     QLabel m_username;      // 用户账户标签
