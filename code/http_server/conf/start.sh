@@ -5,12 +5,13 @@ function init_env
 {
     # export LOCAL_ADDR=$(hostname -I)
     export LOCAL_ADDR=$(ifconfig | grep '192.168.' | awk  -F ' ' '{print $2}')
-    export LOCAL_FDFS_CLIENT_CONF="/etc/fdfs/client.conf"
-    export LOCAL_FDFS_STORAGE_CONF="/etc/fdfs/storage.conf"
-    export LOCAL_FDFS_FDSTDFS_CONF="/etc/fdfs/mod_fastdfs.conf"
-    export LOCAL_FDFS_TRACKER_CONF="/etc/fdfs/tracker.conf"
-    export LOCAL_NGINX_CONF="/home/build_tools/nginx/conf/nginx.conf"
     export CLOUDPAN_PATH="/home/CodeHub/CloudPan/CloudPanClient"
+
+    local_fdfs_client_conf="${CLOUDPAN_PATH}/code/http_server/conf/client.conf"
+    local_fdfs_fdstdfs_conf="${CLOUDPAN_PATH}/code/http_server/conf/mod_fastdfs.conf"
+    local_fdfs_storage_conf="${CLOUDPAN_PATH}/code/http_server/conf/storage.conf"
+    local_fdfs_tracker_conf="${CLOUDPAN_PATH}/code/http_server/conf/tracker.conf"
+    local_nginx_conf="${CLOUDPAN_PATH}/code/http_server/conf/nginx.conf"
 }
 
 function build_server
@@ -47,21 +48,29 @@ function build_server
 
 function fdfs_init_confi
 {
+
     echo "start init configuration file ..."
     echo "current ip address = ${LOCAL_ADDR} ..."
-    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${LOCAL_FDFS_CLIENT_CONF}
-    sed -i "s@bind_addr.*=.*@bind_addr = ${LOCAL_ADDR}@g" ${LOCAL_FDFS_STORAGE_CONF}
-    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${LOCAL_FDFS_STORAGE_CONF}
-    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${LOCAL_FDFS_FDSTDFS_CONF}
-    sed -i "s@bind_addr.*=.*@bind_addr = ${LOCAL_ADDR}@g" ${LOCAL_FDFS_TRACKER_CONF}
+    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${local_fdfs_client_conf}
+    sed -i "s@bind_addr.*=.*@bind_addr = ${LOCAL_ADDR}@g" ${local_fdfs_storage_conf}
+    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${local_fdfs_storage_conf}
+    sed -i "s@tracker_server.*=.*:@tracker_server = ${LOCAL_ADDR}:@g" ${local_fdfs_fdstdfs_conf}
+    sed -i "s@bind_addr.*=.*@bind_addr = ${LOCAL_ADDR}@g" ${local_fdfs_tracker_conf}
+
+    cp -rf ${local_fdfs_client_conf} /etc/fdfs
+    cp -rf ${local_fdfs_fdstdfs_conf} /etc/fdfs
+    cp -rf ${local_fdfs_storage_conf} /etc/fdfs
+    cp -rf ${local_fdfs_tracker_conf} /etc/fdfs
+    cp -rf ${local_nginx_conf} /usr/local/nginx/conf
+
     echo "end  init configuration file ..."
 }
 
 function fdfs_srever_stop
 {
     echo "stop run server"
-    [ -f "/home/FastDFS/tracker/data/fdfs_trackerd.pid" ] && fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} stop
-    [ -f "/home/FastDFS/storage/data/fdfs_storaged.pid" ] && fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} stop
+    [ -f "/home/FastDFS/tracker/data/fdfs_trackerd.pid" ] && fdfs_trackerd ${local_fdfs_tracker_conf} stop
+    [ -f "/home/FastDFS/storage/data/fdfs_storaged.pid" ] && fdfs_storaged ${local_fdfs_storage_conf} stop
     echo_pid=$(ps aux | grep "echo" | grep -v grep | awk '{print $2}')
     file_upload_pid=$(ps aux | grep "file_upload.exe" | grep -v grep | awk '{print $2}')
     file_download_pid=$(ps aux | grep "file_download.exe" | grep -v grep | awk '{print $2}')
@@ -78,8 +87,8 @@ function fdfs_srever_start
     echo "start run server"
     [ -d "${CLOUDPAN_PATH}/temp" ] && rm -rf ${CLOUDPAN_PATH}/temp
     mkdir -p ${CLOUDPAN_PATH}/temp && cd ${CLOUDPAN_PATH}/temp
-    fdfs_trackerd ${LOCAL_FDFS_TRACKER_CONF} start
-    fdfs_storaged ${LOCAL_FDFS_STORAGE_CONF} start
+    fdfs_trackerd ${local_fdfs_tracker_conf} start
+    fdfs_storaged ${local_fdfs_storage_conf} start
     nginx
     spawn-fcgi -a 127.0.0.1 -p 7787 -f /home/build_tools/fcgi2/examples/echo
     spawn-fcgi -a 127.0.0.1 -p 7788 -f ${CLOUDPAN_PATH}/code/http_server/file_upload/file_upload.exe
