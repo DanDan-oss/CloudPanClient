@@ -1,0 +1,41 @@
+1. 注册
+	○ 客户端
+			§ post url：http://127.0.0.1:80/reg
+			§ post数据格式：
+			{
+				userName:xxxx,
+				nickName:xxx,
+				firstPwd:xxx,
+				phone:xxx,
+				email:xxx
+			 }
+		○ 在ngxin服务器配置文件添加location 
+		location /reg
+		{
+			fastcgi_pass 127.0.0.1:9999;
+			include fastcgi.conf;
+		}
+	○服务器
+		回复的数据格式：
+		成功 	{"code":"002"}
+		该用户已存在	{"code":"003"}
+		失败	{"code":"004"}
+2. 登录
+	○ 客户端
+			§ post url：http://127.0.0.1:80/login
+			§ post数据：
+			{
+				user:xxxx,
+				pwd:xxx
+			}
+	○ 服务器端：
+			§ 成功：
+			{
+				"code": "000",
+				"token": "xxx"
+			} 
+			§ 失败：
+			{
+				"code": "001",
+				"token": "faild"
+			}

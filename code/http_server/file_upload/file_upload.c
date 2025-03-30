@@ -8,7 +8,7 @@
 #include "common/deal_mysql.h"
 #include "common/fdfs_api.h"
 
-int  main_proc()
+int  file_upload_proc()
 {
     int buf_size=0;
     char* contentLength = NULL;

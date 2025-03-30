@@ -2,5 +2,5 @@
 
 int main()
 {
-    return main_proc();
+    return file_upload_proc();
 }
