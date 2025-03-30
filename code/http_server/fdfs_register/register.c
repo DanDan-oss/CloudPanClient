@@ -9,9 +9,11 @@
 #include "common/make_log.h"  //日志头文件
 #include "common/deal_mysql.h"
 #include <fcgi_stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-#define REG_LOG_MODULE       "fdfs_cgi"
-#define REG_LOG_PROC         "register"
+#define REG_LOG_MODULE       "fdfs_cgi_register"
 
 int  register_proc();
 int user_register(char *reg_buf); //注册用户，成功返回0，失败返回-1, 该用户已存在返回-2
@@ -29,10 +31,12 @@ int  register_proc()
     while (FCGI_Accept() >= 0)
     {
         char* contentLength = getenv("CONTENT_LENGTH");
-
         printf("Content-type: text/html\r\n\r\n");      // 返回消息
-        if(contentLength == NULL)
+
+        if(contentLength != NULL)
+        {
             length = atoi(contentLength);   // 字符串转整型
+        }
         else
             length = 0;
         
@@ -40,7 +44,7 @@ int  register_proc()
         {
             // 没有登陆用户信息
             printf("No data from standard input.<p>\n");
-            LOG(REG_LOG_MODULE, REG_LOG_PROC, "len = 0, No data from standard input\n");
+            LOG(REG_LOG_MODULE,"len = 0, No data from standard input");
             continue;
         }
 
@@ -48,33 +52,38 @@ int  register_proc()
         char buffer[4*1024] = {0};
         int result = fread(buffer, 1, length, stdin); //从标准输入(web服务器)读取内容
         char* out = NULL;
+        LOG(REG_LOG_MODULE, "buffer = %s",buffer );
 
         if(result == 0)
         {
-            LOG(REG_LOG_MODULE, REG_LOG_PROC, "fread(buf, 1, len, stdin) err\n");
+            LOG(REG_LOG_MODULE, "fread(buf, 1, len, stdin) err");
             continue;
         }
 
-        LOG(REG_LOG_MODULE, REG_LOG_PROC, "buf = %s\n", buffer);
+        LOG(REG_LOG_MODULE, "buf = %s", buffer);
 
         result = user_register( buffer );
         if(result == 0) // 注册成功
         {
             // 返回前端注册情况， 002代表成功
-            print('{"code":"002"}');
+            //out = return_status("002"); //util_cgi.h
+            out="{\"code\":\"002\"}";
         }else if(result == -1)
         {
             //返回前端注册情况， 004代表失败
-            print('{"code":"004"}');
+            //out = return_status("004"); //util_cgi.h
+            out="{\"code\":\"004\"}";
         }else if(result == -2)
         {
-            print('{"code":"003"}');
+            //out = return_status("003"); //util_cgi.h
+             out="{\"code\":\"003\"}";
         }
 
         if(out != NULL)
         {
+            LOG(REG_LOG_MODULE, "res = %s", out);
             printf(out); //给前端反馈信息
-            free(out);
+            //free(out);
         }
     }
 
@@ -98,11 +107,17 @@ int user_register(char* reg_buf)
     do
     {
         // 获取数据库账户密码
-        resualt = get_mysql_info(mysql_user, mysql_pwd, mysql_db);
-        if(resualt != 0 )
-            break;
-        LOG(REG_LOG_MODULE, REG_LOG_PROC, "mysql_user = %s, mysql_pwd = %s, mysql_db = %s\n", mysql_user, mysql_pwd, mysql_db);
+        //resualt = get_mysql_info(mysql_user, mysql_pwd, mysql_db);
+        //if(resualt != 0 )
+        //    break;
+        memcpy(mysql_user, "debian-sys-maint", sizeof("debian-sys-maint"));
+        memcpy(mysql_pwd, "M5Uya0LliUrmcSuU", sizeof("M5Uya0LliUrmcSuU"));
+        memcpy(mysql_db, "dfs", sizeof("dfs"));
+        LOG(REG_LOG_MODULE, "mysql_user = %s, mysql_pwd = %s, mysql_db = %s", mysql_user, mysql_pwd, mysql_db);
 
+        
+        resualt = -1;
+        break;
         //获取注册用户的信息
         char user[128];
         char nick_name[128];
@@ -111,14 +126,15 @@ int user_register(char* reg_buf)
         char email[128];
         resualt = get_reg_info(reg_buf, user, nick_name, pwd, tel, email);
         if(resualt != 0)
-            break;
-        LOG(REG_LOG_MODULE, REG_LOG_PROC, "user = %s, nick_name = %s, pwd = %s, tel = %s, email = %s\n", user, nick_name, pwd, tel, email);
+           break;
+        LOG(REG_LOG_MODULE, "user = %s, nick_name = %s, pwd = %s, tel = %s, email = %s", user, nick_name, pwd, tel, email);
 
-        //connect the database
+        connect the database
         conn = mysql_conn(mysql_user, mysql_pwd, mysql_db);
+        conn = msql_conn("debian-sys-maint", "M5Uya0LliUrmcSuU", "dfs");
         if(conn == NULL)
         {
-            LOG(REG_LOG_MODULE, REG_LOG_PROC, "msql_conn err\n");
+            LOG(REG_LOG_MODULE, "msql_conn err");
             resualt = -1;
             break;
         }
@@ -132,7 +148,7 @@ int user_register(char* reg_buf)
         resualt = process_result_one(conn, sql_cmd, NULL);
         if(resualt == 2)  // 用户存在
         {
-            LOG(REG_LOG_MODULE, REG_LOG_PROC, "【%s】该用户已存在\n");
+            LOG(REG_LOG_MODULE, "【%s】该用户已存在");
             resualt = -2;
             break;
         }
@@ -150,11 +166,11 @@ int user_register(char* reg_buf)
         sprintf(sql_cmd, "insert into user (name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
         if(mysql_query(conn, sql_cmd) != 0)
         {
-            LOG(REG_LOG_MODULE, REG_LOG_PROC, "%s 用户数据插入失败：%s\n", sql_cmd, mysql_error(conn));
+            LOG(REG_LOG_MODULE, "%s 用户数据插入失败：%s", sql_cmd, mysql_error(conn));
             resualt = -1;
             break;
         }
-        LOG(REG_LOG_MODULE, REG_LOG_PROC, "%s 用户数据插入成功!!\n", sql_cmd);
+        LOG(REG_LOG_MODULE, "%s 用户数据插入成功!!", sql_cmd);
         break;
     } while (0);
 

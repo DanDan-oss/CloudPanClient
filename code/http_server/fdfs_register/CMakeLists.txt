@@ -17,4 +17,4 @@ add_compile_options(-Wall)
 #定义可执行文件
 add_executable(fdfs_register.exe ${COMMON_SRC} ${LOCAL_SRC})
 set_target_properties(fdfs_register.exe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-target_link_libraries(fdfs_register.exe fcgi mysqlclient )
+target_link_libraries(fdfs_register.exe fcgi mysqlclient)
