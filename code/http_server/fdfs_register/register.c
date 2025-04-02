@@ -159,22 +159,22 @@ int get_reg_info(char *reg_buf, char *user, char *nick_name, char *pwd, char *te
         
         // 昵称
         child=cJSON_GetObjectItem(root, "nickName");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem nickName err"); resualt = -1;  break; } }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem nickName err"); resualt = -1;  break; }
         strcpy(nick_name, child->valuestring); //拷贝内容
 
         // 密码
         child=cJSON_GetObjectItem(root, "firstPwd");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem firstPwd err"); resualt = -1;  break; } }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem firstPwd err"); resualt = -1;  break; }
         strcpy(pwd, child->valuestring);
 
         //电话
         child=cJSON_GetObjectItem(root, "phone");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem phone err"); resualt = -1;  break; } }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem phone err"); resualt = -1;  break; }
         strcpy(tel, child->valuestring);
 
         // 邮箱
         child=cJSON_GetObjectItem(root, "email");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem email err"); resualt = -1;  break; } }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem email err"); resualt = -1;  break; }
         strcpy(email, child->valuestring);
         
         resualt=0;
