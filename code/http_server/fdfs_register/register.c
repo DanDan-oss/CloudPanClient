@@ -42,7 +42,7 @@ int  register_proc()
         // 获取登录用户信息
         char buffer[4*1024] = {0}; char* out = NULL;
         int result = fread(buffer, 1, length, stdin); //从标准输入(web服务器)读取内容
-        LOG(REG_LOG_MODULE, "buffer = %s",buffer );
+        //LOG(REG_LOG_MODULE, "buffer = %s",buffer );
         if(result == 0)  { LOG(REG_LOG_MODULE, "fread(buf, 1, len, stdin) err");  continue; }
 
         // 获取注册状态
@@ -92,8 +92,7 @@ int user_register(char* reg_buf)
         LOG(REG_LOG_MODULE, "user = %s, nick_name = %s, pwd = %s, tel = %s, email = %s", user, nick_name, pwd, tel, email);
 
         // connect the database
-        //conn = msql_conn(mysql_user, mysql_pwd, mysql_db);
-        conn = msql_conn("debian-sys-maint", "M5Uya0LliUrmcSuU", "dfs");
+        conn = msql_conn(mysql_user, mysql_pwd, mysql_db);
         if(conn == NULL) { LOG(REG_LOG_MODULE, "msql_conn err");  resualt = -1; break; }
 
         //设置数据库编码，主要处理中文编码问题
@@ -116,8 +115,8 @@ int user_register(char* reg_buf)
         strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", ptm);
 
         // 插入注册信息
-        sprintf(sql_cmd, "insert into user (name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
-        resualt=mysql_query(conn, sql_cmd)
+        sprintf(sql_cmd, "insert into user (u_name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
+        resualt=mysql_query(conn, sql_cmd);
         if(resualt != 0) { LOG(REG_LOG_MODULE, "%s 用户数据插入失败：%s", sql_cmd, mysql_error(conn)); resualt = -1;  break; }
 
         LOG(REG_LOG_MODULE, "%s 用户数据插入成功!!", sql_cmd);
@@ -148,33 +147,33 @@ int get_reg_info(char *reg_buf, char *user, char *nick_name, char *pwd, char *te
     //解析一个json字符串为cJSON对象
     do
     {
-        root=cJSON_parse(reg_buf);
-        if(!root) { LOG(REG_LOG_MODULE, "cJSON_Parse err");  resualt = -1;  break; }
+        root=cJSON_Parse(reg_buf);
+        if(!root) { LOG(REG_LOG_MODULE, "cJSON_Parse err: %s", reg_buf);  resualt = -1;  break; }
 
         //返回指定字符串对应的json对象
         child=cJSON_GetObjectItem(root, "userName");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem userName err"); resualt = -1;  break; }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem userName err: %s", reg_buf); resualt = -1;  break; }
         strcpy(user, child->valuestring);  // 拷贝内容
         //LOG(REG_LOG_MODULE, "child->valuestring = %s\n", child->valuestring);
         
         // 昵称
         child=cJSON_GetObjectItem(root, "nickName");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem nickName err"); resualt = -1;  break; }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem nickName err: %s", reg_buf); resualt = -1;  break; }
         strcpy(nick_name, child->valuestring); //拷贝内容
 
         // 密码
         child=cJSON_GetObjectItem(root, "firstPwd");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem firstPwd err"); resualt = -1;  break; }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem firstPwd err: %s", reg_buf); resualt = -1;  break; }
         strcpy(pwd, child->valuestring);
 
         //电话
         child=cJSON_GetObjectItem(root, "phone");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem phone err"); resualt = -1;  break; }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem phone err: %s", reg_buf); resualt = -1;  break; }
         strcpy(tel, child->valuestring);
 
         // 邮箱
         child=cJSON_GetObjectItem(root, "email");
-        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem email err"); resualt = -1;  break; }
+        if(!child) { LOG(REG_LOG_MODULE, "cJSON_GetObjectItem email err: %s", reg_buf); resualt = -1;  break; }
         strcpy(email, child->valuestring);
         
         resualt=0;
