@@ -1,48 +1,103 @@
--- 创建一个名称为dfs的数据库。
--- create database dfs;
+1. 创建一个名称为cloud_disk的数据库。
+CREATE DATABASE cloud_disk;
 
--- 删除数据库dfs
--- drop database dfs;
+2. 删除数据库cloud_disk
+		drop database cloud_disk;
 
--- 使用数据库 dfs
-use dfs;
+3. 使用数据库 cloud_disk
+use cloud_disk;
 
--- 创建用户表
-create table user
-(   u_id bigint not null primary key AUTO_INCREMENT,
-	u_name VARCHAR(40) not null,
-	nickname VARCHAR(40) not null,
-	password VARCHAR(40) not null,
-	phone VARCHAR(15) not null,
-	createtime timestamp,
-	email VARCHAR(40),
-	constraint uq_nickname unique(nickname), constraint uq_u_name unique(u_name)
-);
+4. 创建用户表
+-- id 用户序号，自动递增，主键
+-- name 用户名字
+-- nickname 用户昵称
+-- password 密码
+-- phone	手机号码
+-- createtime 时间
+-- email 邮箱
+-- CONSTRAINT 
+-- CONSTRAINT
 
--- file_id 文件id
--- url 文件url
--- filename 文件名字
--- createtime 文件创建时间
--- user	文件所属用户
--- type 文件类型： png, zip, mp4……
--- shared_status 共享状态, 0为没有共享， 1为共享
--- count 文件引用计数， 默认为1， 共享一次加1
--- pv 文件下载量，默认值为1，下载一次加1
-
-create table file_info
+CREATE TABLE user 
 (
-	file_id varchar(200) not null primary key,
-	url varchar(512) not null,
-	filename varchar(128),
-	createtime timestamp,
-	user VARCHAR(40) not null,
-	type VARCHAR(20),
-	shared_status int, 
-	count int,
-	pv int
+	id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR (128) NOT NULL,
+	nickname VARCHAR (128) NOT NULL,
+	password VARCHAR (128) NOT NULL,
+	phone VARCHAR (15) NOT NULL,
+	createtime VARCHAR (128),
+	email VARCHAR (100),
+	CONSTRAINT uq_nickname UNIQUE (nickname),
+	CONSTRAINT uq_name UNIQUE (NAME)
 );
 
+-- 插入用户数据
+-- INSERT INTO USER (name, nickname, password, phone, createtime, email) VALUES ('mike', 'sb', '123456','110','2017-01-11 17:47:30','110@qq.com');
+
+-- 查询用户数据
+-- SELEC id FROM user  WHERE name = "kevin";
+
+5.  文件信息表
+-- md5 文件md5
+-- file_id 文件id-/group1/M00/00/00/xxx.png
+-- url	文件url 192.168.1.2:80/group1/M00/00/00/xxx.png
+-- size	文件大小, 以字节为单位
+-- type	文件类型： png, zip, mp4……
+-- count  文件引用计数， 默认为1 每增加一个用户拥有此文件，此计数器+1
+
+CREATE TABLE file_info 
+(
+	md5 VARCHAR (200) NOT NULL PRIMARY KEY,
+	file_id VARCHAR (256) NOT NULL,
+	url VARCHAR (512) NOT NULL,
+	size BIGINT,
+	type VARCHAR (20),
+	count INT
+);
+
+-- 更新
+-- UPDATE file_info SET count = 2 WHERE md5 = "bae488ee63cef72efb6a3f1f311b3743";
+
+6. 用户文件列表
 -- =============================================== 共享文件列表
+-- user	文件所属用户
+-- md5 文件md5
+-- createtime 文件共享时间
+-- filename 文件名字
+-- shared_status  共享状态, 0为没有共享， 1为共享
+-- pv 文件下载量，默认值为1，下载一次加1
+CREATE TABLE user_file_list 
+(
+	user VARCHAR (128) NOT NULL,
+	md5 VARCHAR (200) NOT NULL,
+	createtime VARCHAR (128),
+	filename VARCHAR (128),
+	shared_status INT,
+	pv INT
+);
+
+-- 查看某个用户的文件列表
+-- SELECT md5 FROM user_file_list WHERE name = "mike";
+-- 查看某个文件的属性
+-- SELECT md5 FROM user_file_list WHERE name = "mike";
+-- 设置某个文件是否共享
+-- UPDATE user_file_list SET shared_status = 1 WHERE md5 = "bae488ee63cef72efb6a3f1f311b3743" AND user = 'mike';
+
+7. 用户文件数量表
+-- user	文件所属用户
+-- count 拥有文件的数量
+CREATE TABLE user_file_count 
+(
+	user VARCHAR (128) NOT NULL PRIMARY KEY,
+	count INT
+);
+
+-- 更新
+-- UPDATE user_file_count SET count = 10 WHERE user = "mike";
+-- 删除
+-- DELETE FROM user_file_count WHERE user = "mike";
+
+8. 共享文件列表
 -- user	文件所属用户
 -- md5 文件md5
 -- createtime 文件共享时间
@@ -57,13 +112,3 @@ create table share_file_list
 	pv int
 );
 
--- 插入
--- insert into user (u_name, nickname, password, phone, createtime, email) values ('mike', 'sb', '123456', '110', '2017-01-11 17:47:30', '110@qq.com' );
-
--- insert into share_file_list (user, md5, createtime, filename, pv) values ('mike', '0d3bd02a98dbfe751275078d04534211', '2017-06-10 14:59:35', '1.jpg', 10);
-
--- 查询
--- select u_id from user where u_name = "mike";
-
--- 更新
--- update file_info set count = 2 where file_id = "group1/M00/00/01/wKgfbVh2AGKASftLAAD-JOf3Vps147.jpg";
