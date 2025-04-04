@@ -11,6 +11,7 @@ file(GLOB COMMON_SRC
     "${CMAKE_SOURCE_DIR}/../common/make_log.c" 
     "${CMAKE_SOURCE_DIR}/../common/deal_mysql.c" 
     "${CMAKE_SOURCE_DIR}/../common/cJSON.c"
+    "${CMAKE_SOURCE_DIR}/../common/configure.c"
 )
 file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/register.c")
 

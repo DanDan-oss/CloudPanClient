@@ -9,6 +9,7 @@
 #include "common/make_log.h"  //日志头文件
 #include "common/deal_mysql.h"
 #include "common/cJSON.h"
+#include "common/configure.h"
 #include <fcgi_stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,12 +78,12 @@ int user_register(char* reg_buf)
     do
     {
         // 获取数据库账户密码
-        //resualt = get_mysql_info(mysql_user, mysql_pwd, mysql_db);
-        //if(resualt != 0 )
-        //    break;
-        memcpy(mysql_user, "debian-sys-maint", sizeof("debian-sys-maint"));
-        memcpy(mysql_pwd, "M5Uya0LliUrmcSuU", sizeof("M5Uya0LliUrmcSuU"));
-        memcpy(mysql_db, "dfs", sizeof("dfs"));
+        resualt = get_mysql_info(mysql_user, mysql_pwd, mysql_db);
+        if(resualt != 0 )
+            break;
+        //memcpy(mysql_user, "debian-sys-maint", sizeof("debian-sys-maint"));
+        //memcpy(mysql_pwd, "M5Uya0LliUrmcSuU", sizeof("M5Uya0LliUrmcSuU"));
+        //memcpy(mysql_db, "dfs", sizeof("dfs"));
         LOG(REG_LOG_MODULE, "mysql_user = %s, mysql_pwd = %s, mysql_db = %s", mysql_user, mysql_pwd, mysql_db);
 
         //获取注册用户的信息

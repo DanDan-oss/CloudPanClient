@@ -9,9 +9,9 @@
 	{
 		"ip": "127.0.0.1",
 		"port": "3306",
-		"database": "cloud_disk",
-		"user": "root",
-		"password": "root"
+		"database": "dfs",
+		"user": "debian-sys-maint",
+		"password": "M5Uya0LliUrmcSuU"
 	},
 	
 	"dfs_path":

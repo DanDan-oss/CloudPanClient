@@ -101,6 +101,8 @@ function fdfs_srever_start
     echo "start run server"
     [ -d "${CLOUDPAN_PATH}/temp" ] && rm -rf ${CLOUDPAN_PATH}/temp
     mkdir -p ${CLOUDPAN_PATH}/temp && cd ${CLOUDPAN_PATH}/temp
+    cp -rf ${CLOUDPAN_PATH}/code/http_server/conf ${CLOUDPAN_PATH}/temp/conf
+
     fdfs_trackerd ${local_fdfs_tracker_conf} start
     fdfs_storaged ${local_fdfs_storage_conf} start
     nginx
