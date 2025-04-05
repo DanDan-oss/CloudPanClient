@@ -32,7 +32,7 @@ CREATE TABLE user
 );
 
 -- 插入用户数据
--- INSERT INTO USER (name, nickname, password, phone, createtime, email) VALUES ('mike', 'sb', '123456','110','2017-01-11 17:47:30','110@qq.com');
+-- INSERT INTO user (name, nickname, password, phone, createtime, email) VALUES ('mike', 'sb', '123456','110','2017-01-11 17:47:30','110@qq.com');
 
 -- 查询用户数据
 -- SELEC id FROM user  WHERE name = "kevin";

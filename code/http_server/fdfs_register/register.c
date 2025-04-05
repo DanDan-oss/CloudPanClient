@@ -104,7 +104,7 @@ int user_register(char* reg_buf)
         char sql_cmd[SQL_MAX_LEN] = {0};
         sprintf(sql_cmd, "select * from user where name = '%s'", user);
         resualt = process_result_one(conn, sql_cmd, NULL);
-        if(resualt == 2) { LOG(REG_LOG_MODULE, "【%s】该用户已存在"); resualt = -2; break;  }  // 用户存在
+        if(resualt == 2) { LOG(REG_LOG_MODULE, "Registered user, user '%s' already exists", user); resualt = -2; break;  }  // 用户存在
 
         //当前时间戳
         struct timeval tv;
@@ -116,7 +116,7 @@ int user_register(char* reg_buf)
         strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", ptm);
 
         // 插入注册信息
-        sprintf(sql_cmd, "insert into user (u_name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
+        sprintf(sql_cmd, "insert into user (name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
         resualt=mysql_query(conn, sql_cmd);
         if(resualt != 0) { LOG(REG_LOG_MODULE, "%s 用户数据插入失败：%s", sql_cmd, mysql_error(conn)); resualt = -1;  break; }
 
