@@ -8,7 +8,7 @@
 
 
 #define CONFIG_PATH    "./conf/conf.json" //配置文件路径
-#define CFG_LOG_MODULE "cgi_configure"
+#define CFG_LOG_MODULE "fdfs_cgi_configure"
 
 /* -------------------------------------------*/
 /**
