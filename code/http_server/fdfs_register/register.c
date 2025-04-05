@@ -79,11 +79,7 @@ int user_register(char* reg_buf)
     {
         // 获取数据库账户密码
         resualt = get_mysql_info(mysql_user, mysql_pwd, mysql_db);
-        if(resualt != 0 )
-            break;
-        //memcpy(mysql_user, "debian-sys-maint", sizeof("debian-sys-maint"));
-        //memcpy(mysql_pwd, "M5Uya0LliUrmcSuU", sizeof("M5Uya0LliUrmcSuU"));
-        //memcpy(mysql_db, "dfs", sizeof("dfs"));
+        if(resualt != 0 )  break;
         LOG(REG_LOG_MODULE, "mysql_user = %s, mysql_pwd = %s, mysql_db = %s", mysql_user, mysql_pwd, mysql_db);
 
         //获取注册用户的信息

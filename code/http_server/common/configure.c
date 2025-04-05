@@ -31,15 +31,15 @@ int get_config_vaule(const char *profile, char *title, char *key, char *value)
     char *buffer = NULL;
     FILE *fp = NULL;
     cJSON *root= NULL;
+    char path[256];
 
     // 处理异常空指针
     if(!profile || !title || !key || !value)  return -1;
-    
     do
     {
         // 只读形式打开文件
         fp=fopen(profile, "rb");
-        if(!fp)  { perror("fopen"); LOG(CFG_LOG_MODULE, "fopen err: %s", profile); resualt=-1; break; }
+        if(!fp)  {  getcwd(path, 256); perror("fopen"); LOG(CFG_LOG_MODULE, "fopen err: %s/%s", path, profile); resualt=-1; break; }
 
         fseek(fp, 0, SEEK_END); // 移动到文件末尾
         long fsize=ftell(fp);   // 获取文件大小
