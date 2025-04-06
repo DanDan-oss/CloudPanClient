@@ -41,6 +41,7 @@ int  login_proc()
         result=user_login_in(buffer, token);
         if(result == 0)         sprintf(out, "{\"code\":\"000\", \"token\":\"%s\"}", token);
         else if(result == -2)   sprintf(out, "{\"code\":\"001\", \"token\":\"user does not exist\"}");
+        else if(result == -3)   sprintf(out, "{\"code\":\"001\", \"token\":\"the password is incorrect\"}");
         else                    sprintf(out, "{\"code\":\"001\", \"token\":\"faild\"}");
         //给前端反馈信息
         if(out) { LOG(LOGIN_LOG_MODULE, "res = %s", out); printf(out);  /*free(out); */ } 
@@ -64,7 +65,7 @@ int user_login_in(char *reg_buf, char *token)
     memset(token, 0, TOKEN_LEN);
     memcpy(token, "this token", strlen("this token"));
     //result=set_token(user, token);
-    LOG(LOGIN_LOG_MODULE, "token = %s\n", token);
+    LOG(LOGIN_LOG_MODULE, "token = %s", token);
     return 0;
 }
 
@@ -144,7 +145,7 @@ int check_user_pwd( char *user, char *pwd)
         else if(result != 0) { LOG(LOGIN_LOG_MODULE, "login user '%s' select error", user); result = -1; break;  }  // 其它错误
 
         // 判断客户端发送的密码和数据库中的密码是否一致
-        if( 0==strcmp(tmp, pwd))   result=0;   else    result=-1;
+        if( 0==strcmp(tmp, pwd))   result=0;   else    result=-3;           // 密码错误
     
     } while (0);
 
