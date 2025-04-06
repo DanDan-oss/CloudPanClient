@@ -1,0 +1,25 @@
+# 编译产物
+/temp/
+/build/
+/out/
+/bin/
+*.o
+*.a
+*.so
+*.log
+
+# IDE/编辑器文件
+.vscode/
+.idea/
+
+# 系统生成文件
+*~
+*.swp
+*.swo
+
+# CMake 缓存
+CMakeCache.txt
+CMakeFiles/
+Makefile
+
+

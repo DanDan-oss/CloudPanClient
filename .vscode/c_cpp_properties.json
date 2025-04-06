@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/usr/include",
+                "/usr/include/mysql",
+                "/usr/local/include",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compileCommands": [
+                "/usr/bin/gcc"
+            ]
+        }
+    ],
+    "version": 4
+}
+
