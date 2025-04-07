@@ -145,7 +145,13 @@ int check_user_pwd( char *user, char *pwd)
         else if(result != 0) { LOG(LOGIN_LOG_MODULE, "login user '%s' select error", user); result = -1; break;  }  // 其它错误
 
         // 判断客户端发送的密码和数据库中的密码是否一致
-        if( 0==strcmp(tmp, pwd))   result=0;   else    result=-3;           // 密码错误
+        char md5_pass[16]; // 二进制MD5
+        char hex_pass[33]; // 十六进制字符串
+
+        MD5((unsigned char*)tmp, strlen(tmp), md5_pass);
+        md5_to_hex(md5_pass, hex_pass);
+        LOG(LOGIN_LOG_MODULE, "login password src=%s des=%s", pwd, hex_pass);
+        if( 0==strcmp(hex_pass, pwd))   result=0;   else    result=-3;           // 密码错误
     
     } while (0);
 
