@@ -248,7 +248,7 @@ QByteArray LoginContext::setLoginJson(const LoginInfo& info)
     QMap<QString, QVariant> login;
     login.insert("user", info.username);
     // 密码使用MD5加密
-    login.insert("pwd", CryptUtil::md5Text(info.password));
+    login.insert("pwd", CryptUtil::md5Text(CryptUtil::md5Text(info.password)));
 
     /*json数据如下
         {
