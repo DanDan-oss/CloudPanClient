@@ -8,7 +8,7 @@
  #include <stdlib.h>
  #include <string.h>
  #include <stdio.h>
- #include "des.h"
+ #include "cryptutil.h"
  
  /*********************************************************
    data type definition for Des;
@@ -1014,9 +1014,9 @@ void md5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen)
     if(inputlen >= partlen)
     {
        memcpy(&context->buffer[index],input,partlen);
-       MD5Transform(context->state,context->buffer);
+       md5Transform(context->state,context->buffer);
        for(i = partlen;i+64 <= inputlen;i+=64)
-           MD5Transform(context->state,&input[i]);
+           md5Transform(context->state,&input[i]);
        index = 0;        
     }  
     else
@@ -1032,10 +1032,10 @@ void md5Final(MD5_CTX *context,unsigned char digest[16])
     unsigned char bits[8];
     index = (context->count[0] >> 3) & 0x3F;
     padlen = (index < 56)?(56-index):(120-index);
-    MD5Encode(bits,context->count,8);
-    MD5Update(context,PADDING,padlen);
-    MD5Update(context,bits,8);
-    MD5Encode(digest,context->state,16);
+    md5Encode(bits,context->count,8);
+    md5Update(context,PADDING,padlen);
+    md5Update(context,bits,8);
+    md5Encode(digest,context->state,16);
 }
 
 void md5Encode(unsigned char *output,unsigned int *input,unsigned int len)
@@ -1073,7 +1073,7 @@ void md5Transform(unsigned int state[4],unsigned char block[64])
     unsigned int c = state[2];
     unsigned int d = state[3];
     unsigned int x[64];
-    MD5Decode(x,block,64);
+    md5Decode(x,block,64);
     FF(a, b, c, d, x[ 0], 7, 0xd76aa478); /* 1 */
     FF(d, a, b, c, x[1], 12, 0xe8c7b756); /* 2 */
     FF(c, d, a, b, x[2], 17, 0x242070db); /* 3 */

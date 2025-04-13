@@ -1,8 +1,9 @@
 #include "login.h"
-#include "common/deal_mysql.h"
-#include "common/cJSON.h"
 #include "common/configure.h"
 #include "common/make_log.h"
+#include "common/cJSON.h"
+#include "common/deal_mysql.h"
+#include "common/cryptutil.h"
 #include "common/redis_op.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,7 +66,7 @@ int user_login_in(char *reg_buf, char *token)
     //生成token字符串
     memset(token, 0, TOKEN_LEN);
     memcpy(token, "this token", strlen("this token"));
-    //result=set_token(user, token);
+    result=set_token(login_user, token);
     LOG(LOGIN_LOG_MODULE, "token = %s", token);
     return 0;
 }
@@ -133,13 +134,13 @@ int check_user_pwd( char *user, char *pwd)
 
         // connect the database
         conn = msql_conn(mysql_user, mysql_pwd, mysql_db);
-        char tmp[PWD_LEN] = {0}; //deal result
         if(conn == NULL) { LOG(LOGIN_LOG_MODULE, "msql_conn err");  result = -1; break; }
         //设置数据库编码，主要处理中文编码问题
         mysql_query(conn, "set names utf8");
 
         //sql语句，查找某个用户对应的密码
         //返回值： 0成功并保存记录集，1没有记录集，2有记录集但是没有保存，-1失败
+        char tmp[PWD_LEN] = {0}; //deal result
         sprintf(sql_cmd, "select password from user where name=\"%s\"", user);
         result = process_result_one(conn, sql_cmd, tmp);
         if(result == 1) { LOG(LOGIN_LOG_MODULE, "login user '%s' does not exist", user); result = -2; break;  }  // 用户不存在
@@ -159,3 +160,75 @@ int check_user_pwd( char *user, char *pwd)
     if(conn)    mysql_close(conn);
     return result;
 }
+
+
+/* -------------------------------------------*/
+/**
+ * @brief  生成token字符串, 保存redis数据库
+ *
+ * @param user 		用户名
+ * @param token     生成的token字符串
+ *
+ * @returns
+ *      成功: 0
+ *      失败：-1
+ */
+ /* -------------------------------------------*/
+ int set_token(char *user, char *token)
+ {
+     int result;
+     redisContext *redis_conn=NULL;
+     char redis_ip[30]={0}, redis_port[10]={0};
+
+    do
+    {
+        // 读取redis配置信息
+        result = get_redis_info(redis_ip, redis_port);
+        if(result != 0 )  break;
+        LOG(LOGIN_LOG_MODULE, "redis_ip = %s, redis_port = %s", redis_ip, redis_port);
+
+        // 连接redis数据库
+        redis_conn = rop_connectdb_nopwd(redis_ip, redis_port);
+        if(redis_conn == NULL) { LOG(LOGIN_LOG_MODULE, "redis connected error");  result = -1; break; }
+
+
+        //产生4个1000以内的随机数
+        int rand_num[4] = {0};
+        srand((unsigned int)time(NULL));
+        for (size_t i = 0; i < 4; ++i)  rand_num[i]=rand()%1000;        //随机数
+        
+        char tmp[1024] = {0};
+        sprintf(tmp, "%s%d%d%d%d", user, rand_num[0], rand_num[1], rand_num[2], rand_num[3]);
+        LOG(LOGIN_LOG_MODULE, "tmp = %s", tmp);
+
+        // 加密
+        char enc_tmp[1024*2] = {0};
+        int enc_len = 0;
+        
+        result=desEncryptText((unsigned char*)tmp, strlen(tmp), (unsigned char*)enc_tmp, &enc_len);
+        if(result != 0 )    { LOG(LOGIN_LOG_MODULE, "desEncryptText error");  result = -1; break; }
+
+        // to base64
+        char base64[1024*3] = {0};
+        base64_encode((const unsigned char *)enc_tmp, enc_len, base64); //base64编码
+        LOG(LOGIN_LOG_MODULE, "base64 = %s", base64);
+
+        // to md5
+        MD5_CTX md5;
+        unsigned char decrypt[16];
+        md5Init(&md5);
+        md5Update(&md5, (unsigned char*)base64, strlen(base64));
+        md5Final(&md5, decrypt);
+
+        char str[100] = { 0 };
+        md5_to_hex(decrypt, token);
+
+        // redis保存此字符串，用户名 : token, 有效时间为24小时
+        result= rop_setex_string(redis_conn, user, 86400, token);
+        //result = rop_setex_string(redis_conn, user, 30, token); //30秒
+
+    } while (0);
+    
+    if(redis_conn)   rop_disconnect(redis_conn);
+    return result;
+ }
