@@ -4,6 +4,7 @@ project("fdfs_login")
 # 头文件
 include_directories(/usr/include)
 include_directories(/usr/include/mysql)
+include_directories(/usr/local/include/hiredis)
 include_directories(${CMAKE_SOURCE_DIR}/..)
 
 #源文件
@@ -12,7 +13,8 @@ file(GLOB COMMON_SRC
     "${CMAKE_SOURCE_DIR}/../common/deal_mysql.c" 
     "${CMAKE_SOURCE_DIR}/../common/cJSON.c"
     "${CMAKE_SOURCE_DIR}/../common/configure.c"
-    "${CMAKE_SOURCE_DIR}/../common/cryptutil.cpp"
+    "${CMAKE_SOURCE_DIR}/../common/cryptutil.c"
+    "${CMAKE_SOURCE_DIR}/../common/redis_op.c"
 )
 file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/login.c")
 
@@ -26,4 +28,4 @@ add_executable(fdfs_login.exe ${COMMON_SRC} ${LOCAL_SRC})
 set_target_properties(fdfs_login.exe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # 链接库
-target_link_libraries(fdfs_login.exe fcgi mysqlclient m crypto)
+target_link_libraries(fdfs_login.exe fcgi mysqlclient m crypto hiredis)

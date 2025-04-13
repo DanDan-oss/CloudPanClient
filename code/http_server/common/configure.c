@@ -23,8 +23,6 @@
  *      0 succ, -1 fail
  */
 /* -------------------------------------------*/
-
-
 int get_config_vaule(const char *profile, char *title, char *key, char *value)
 {
     int resualt;
@@ -76,5 +74,13 @@ int get_mysql_info(char *mysql_user, char *mysql_passwd, char *mysql_db)
     if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "password", mysql_passwd))  { LOG(CFG_LOG_MODULE, "mysql_passwd err"); return -1; }
     if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "database", mysql_db)) { LOG(CFG_LOG_MODULE, "mysql_db err"); return -1; }
     LOG(CFG_LOG_MODULE, "mysql_user=%s mysql_passwd=%s mysql_db=%s", mysql_user, mysql_passwd, mysql_db);
+    return 0;
+}
+
+int get_redis_info(char *redis_ip, char *redis_port)
+{
+    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "ip", redis_ip))  { LOG(CFG_LOG_MODULE, "redis_ip err"); return -1; }
+    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "port", redis_port))  { LOG(CFG_LOG_MODULE, "redis_port err"); return -1; }
+    LOG(CFG_LOG_MODULE, "redis_ip=%s redis_port=%s", redis_ip, redis_port);
     return 0;
 }
