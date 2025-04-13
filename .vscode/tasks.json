@@ -1,22 +1,86 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "CMake: Build fdfs_client",
             "type": "shell",
-            "command": "g++",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}.exe"
-            ],
+            "command": "cd ${workspaceFolder}/code/http_server/fdfs_client && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make",
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "使用CMake构建fdfs_client项目"
+        },
+        {
+            "label": "CMake: Build fdfs_register",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/code/http_server/fdfs_register && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "使用CMake构建fdfs_register项目"
+        },
+        {
+            "label": "CMake: Build file_upload",
+            "type": "shell",
+            "command": "cd ${workspaceFolder}/code/http_server/file_upload && mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && make",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "使用CMake构建file_upload项目"
+        },
+        {
+            "label": "Debug: Start gdbserver for fdfs_client",
+            "type": "shell",
+            "command": "gdbserver 127.0.0.1:2345 ${workspaceFolder}/code/http_server/fdfs_client/bin/fdfs_client.exe",
+            "isBackground": true,
+            "problemMatcher": [],
+            "detail": "为fdfs_client启动gdbserver"
+        },
+        {
+            "label": "Debug: Start gdbserver for fdfs_register",
+            "type": "shell",
+            "command": "gdbserver 127.0.0.1:2346 ${workspaceFolder}/code/http_server/fdfs_register/bin/fdfs_register.exe",
+            "isBackground": true,
+            "problemMatcher": [],
+            "detail": "为fdfs_register启动gdbserver"
+        },
+        {
+            "label": "Debug: Start gdbserver for file_upload",
+            "type": "shell",
+            "command": "gdbserver 127.0.0.1:2347 ${workspaceFolder}/code/http_server/file_upload/bin/file_upload.exe",
+            "isBackground": true,
+            "problemMatcher": [],
+            "detail": "为file_upload启动gdbserver"
+        },
+        {
+            "label": "Full Debug: fdfs_client",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "CMake: Build fdfs_client",
+                "Debug: Start gdbserver for fdfs_client"
+            ],
+            "problemMatcher": [],
+            "detail": "完整调试流程: 构建+启动gdbserver"
+        },
+        {
+            "label": "Full Debug: fdfs_register",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "CMake: Build fdfs_register",
+                "Debug: Start gdbserver for fdfs_register"
+            ],
+            "problemMatcher": [],
+            "detail": "完整调试流程: 构建+启动gdbserver"
+        },
+        {
+            "label": "Full Debug: file_upload",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "CMake: Build file_upload",
+                "Debug: Start gdbserver for file_upload"
+            ],
+            "problemMatcher": [],
+            "detail": "完整调试流程: 构建+启动gdbserver"
         }
     ]
 }
