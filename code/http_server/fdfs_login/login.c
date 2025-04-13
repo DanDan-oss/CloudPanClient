@@ -3,6 +3,7 @@
 #include "common/cJSON.h"
 #include "common/configure.h"
 #include "common/make_log.h"
+#include "common/redis_op.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcgi_stdio.h>
