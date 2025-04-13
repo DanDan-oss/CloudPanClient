@@ -10,45 +10,58 @@
 extern "C" {
 #endif
 
-void md5_to_hex(const unsigned char *md5, char *hex);
+typedef struct
+{
+    unsigned int count[2];
+    unsigned int state[4];
+    unsigned char buffer[64];   
+}MD5_CTX;
 
-//加密小于4k的数据（encrypt：加密）
-//pInData：明文数据
-//nInDataLen：明文数据长度
-//pOutData：加密后的数据
-//pOutDataLen：加密数据的长度
-int DesEnc(
-		unsigned char *pInData,
-		int            nInDataLen,
-		unsigned char *pOutData,
-		int           *pOutDataLen);
+#define F(x,y,z) ((x & y) | (~x & z))
+#define G(x,y,z) ((x & z) | (y & ~z))
+#define H(x,y,z) (x^y^z)
+#define I(x,y,z) (y ^ (x | ~z))
+#define ROTATE_LEFT(x,n) ((x << n) | (x >> (32-n)))
+#define FF(a,b,c,d,x,s,ac) \
+          { \
+          a += F(b,c,d) + x + ac; \
+          a = ROTATE_LEFT(a,s); \
+          a += b; \
+          }
+#define GG(a,b,c,d,x,s,ac) \
+          { \
+          a += G(b,c,d) + x + ac; \
+          a = ROTATE_LEFT(a,s); \
+          a += b; \
+          }
+#define HH(a,b,c,d,x,s,ac) \
+          { \
+          a += H(b,c,d) + x + ac; \
+          a = ROTATE_LEFT(a,s); \
+          a += b; \
+          }
+#define II(a,b,c,d,x,s,ac) \
+          { \
+          a += I(b,c,d) + x + ac; \
+          a = ROTATE_LEFT(a,s); \
+          a += b; \
+          }
 
-//加密等于4k的数据
-int DesEnc_raw(
-	unsigned char *pInData,
-	int            nInDataLen,
-	unsigned char *pOutData,
-	int           *pOutDataLen);
+extern char* base64_encode(const unsigned char *bindata, int binlength, char *base64);
+extern int base64_decode(const char *base64, unsigned char* bindata);
 
-//解密小于4k的数据(decrypt：解密)
-//pInData：密文数据
-//nInDataLen：密文数据长度
-//pOutData：解密后的数据
-//pOutDataLen：解密数据的长度
-int DesDec(
-	   unsigned char *pInData,
-	   int            nInDataLen,
-	   unsigned char *pOutData,
-	   int           *pOutDataLen);
+extern int desEncryptText(unsigned char *pInData, int nInDataLen, unsigned char *pOutData, int *pOutDataLen);
+extern int desEncryptTextRaw(unsigned char *pInData, int nInDataLen, unsigned char *pOutData, int *pOutDataLen);
+extern int desDecryptText(unsigned char *pInData, int nInDataLen, unsigned char *pOutData, int *pOutDataLen);
+extern int desDecryptTextRaw(unsigned char *pInData, int nInDataLen, unsigned char *pOutData, int *pOutDataLen);
 
-//解密等于4k的数据
-int DesDec_raw(
-	unsigned char *pInData,
-	int            nInDataLen,
-	unsigned char *pOutData,
-	int           *pOutDataLen);
-
-
+extern void md5_to_hex(const unsigned char *md5, char *hex);
+extern void md5Init(MD5_CTX *context);
+extern void md5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen);
+extern void md5Final(MD5_CTX *context,unsigned char digest[16]);
+extern void md5Encode(unsigned char *output,unsigned int *input,unsigned int len);
+extern void md5Decode(unsigned int *output,unsigned char *input,unsigned int len);
+extern void md5Transform(unsigned int state[4],unsigned char block[64]);
 
 #ifdef __cplusplus
 }

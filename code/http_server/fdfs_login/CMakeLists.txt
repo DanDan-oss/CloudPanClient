@@ -12,7 +12,7 @@ file(GLOB COMMON_SRC
     "${CMAKE_SOURCE_DIR}/../common/deal_mysql.c" 
     "${CMAKE_SOURCE_DIR}/../common/cJSON.c"
     "${CMAKE_SOURCE_DIR}/../common/configure.c"
-    "${CMAKE_SOURCE_DIR}/../common/cryptutil.cpp"
+    "${CMAKE_SOURCE_DIR}/../common/cryptutil.c"
     "${CMAKE_SOURCE_DIR}/../common/redis_op.c"
 )
 file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/login.c")
