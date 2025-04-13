@@ -4,6 +4,7 @@
 #include "common/global.h"
 #include "common/cryptutil.h"
 #include "common/network_manager.h"
+#include "common/logininfoinstance.h"
 #include <QRegularExpression>
 #include <QJsonObject>>
 #include <QJsonDocument>
@@ -199,6 +200,10 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
             return;
         }
         WinPrintA << "登陆成功";
+        LoginInfoInstance* p = LoginInfoInstance::getInstance();
+        p->setLoginInfo(info.username, server.ip, QString::number(server.port), tmpList.at(1));
+        qDebug() << p->getUser().toUtf8().data() << ", " << p->getIp() << ", " << p->getPort() << ", " << p->getToken();
+
         reply->deleteLater(); //释放资源
     });
 
@@ -248,7 +253,7 @@ QByteArray LoginContext::setLoginJson(const LoginInfo& info)
     QMap<QString, QVariant> login;
     login.insert("user", info.username);
     // 密码使用MD5加密
-    login.insert("pwd", CryptUtil::md5Text(info.password));
+    login.insert("pwd", CryptUtil::md5Text(CryptUtil::md5Text(info.password)));
 
     /*json数据如下
         {

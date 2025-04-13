@@ -18,6 +18,7 @@ SOURCES += \
     common/loginfo.cpp \
     common/cryptutil.cpp \
     common/network_manager.cpp \
+    common/logininfoinstance.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     common/loginfo.h \
     common/cryptutil.h \
     common/network_manager.h \
+    common/logininfoinstance.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \
