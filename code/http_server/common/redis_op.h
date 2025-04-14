@@ -13,8 +13,7 @@
  #include "make_log.h"
  
  
- #define REDIS_LOG_MODULE          "database"
- #define REDIS_LOG_PROC            "redis"
+ #define REDIS_LOG_MODULE          "redis_database"
  
  #define REDIS_COMMAND_SIZE        300            /* redis Command 指令最大长度 */
  #define FIELD_ID_SIZE            100            /* redis hash表field域字段长度 */

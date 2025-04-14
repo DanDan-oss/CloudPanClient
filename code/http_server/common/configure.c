@@ -37,29 +37,29 @@ int get_config_vaule(const char *profile, char *title, char *key, char *value)
     {
         // 只读形式打开文件
         fp=fopen(profile, "rb");
-        if(!fp)  {  getcwd(path, 256); perror("fopen"); LOG(CFG_LOG_MODULE, "fopen err: %s/%s", path, profile); resualt=-1; break; }
+        if(!fp)  {  getcwd(path, 256); perror("fopen"); LOG_ERROR(CFG_LOG_MODULE, "fopen err: %s/%s", path, profile); resualt=-1; break; }
 
         fseek(fp, 0, SEEK_END); // 移动到文件末尾
         long fsize=ftell(fp);   // 获取文件大小
         fseek(fp, 0, SEEK_SET); // 移动到文件开头
 
         buffer=(char*)calloc(1, fsize+1);   //动态分配空间
-        if(!buffer)   { perror("calloc"); LOG(CFG_LOG_MODULE, "calloc err"); resualt=-1; break; }
+        if(!buffer)   { perror("calloc"); LOG_ERROR(CFG_LOG_MODULE, "calloc err"); resualt=-1; break; }
 
         // 读取文件内容
         fread(buffer, 1, fsize, fp);
 
         //解析一个json字符串为cJSON对象
         cJSON *root=cJSON_Parse(buffer);
-        if(!root)  { LOG(CFG_LOG_MODULE, "cJSON root err"); resualt=-1; break; }
+        if(!root)  { LOG_ERROR(CFG_LOG_MODULE, "cJSON root err"); resualt=-1; break; }
 
         cJSON *father=cJSON_GetObjectItem(root, title);
-        if(!father)  { LOG(CFG_LOG_MODULE, "cJSON father err"); resualt=-1; break; }
+        if(!father)  { LOG_ERROR(CFG_LOG_MODULE, "cJSON father err"); resualt=-1; break; }
 
         cJSON *son=cJSON_GetObjectItem(father, key);
-        if(!son)  { LOG(CFG_LOG_MODULE, "cJSON son err"); resualt=-1; break; }
+        if(!son)  { LOG_ERROR(CFG_LOG_MODULE, "cJSON son err"); resualt=-1; break; }
 
-        //LOG(CFG_LOG_MODULE, "son->valuestring = %s\n", son->valuestring);
+        //LOG_INFO(CFG_LOG_MODULE, "son->valuestring = %s\n", son->valuestring);
         strcpy(value, son->valuestring);
     } while (0);
     
@@ -70,17 +70,17 @@ int get_config_vaule(const char *profile, char *title, char *key, char *value)
 
 int get_mysql_info(char *mysql_user, char *mysql_passwd, char *mysql_db)
 {
-    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "user", mysql_user))  { LOG(CFG_LOG_MODULE, "mysql_user err"); return -1; }
-    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "password", mysql_passwd))  { LOG(CFG_LOG_MODULE, "mysql_passwd err"); return -1; }
-    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "database", mysql_db)) { LOG(CFG_LOG_MODULE, "mysql_db err"); return -1; }
-    LOG(CFG_LOG_MODULE, "mysql_user=%s mysql_passwd=%s mysql_db=%s", mysql_user, mysql_passwd, mysql_db);
+    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "user", mysql_user))  { LOG_ERROR(CFG_LOG_MODULE, "mysql_user err"); return -1; }
+    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "password", mysql_passwd))  { LOG_ERROR(CFG_LOG_MODULE, "mysql_passwd err"); return -1; }
+    if(-1 == get_config_vaule(CONFIG_PATH, "mysql", "database", mysql_db)) { LOG_ERROR(CFG_LOG_MODULE, "mysql_db err"); return -1; }
+    LOG_INFO(CFG_LOG_MODULE, "mysql_user=%s mysql_passwd=%s mysql_db=%s", mysql_user, mysql_passwd, mysql_db);
     return 0;
 }
 
 int get_redis_info(char *redis_ip, char *redis_port)
 {
-    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "ip", redis_ip))  { LOG(CFG_LOG_MODULE, "redis_ip err"); return -1; }
-    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "port", redis_port))  { LOG(CFG_LOG_MODULE, "redis_port err"); return -1; }
-    LOG(CFG_LOG_MODULE, "redis_ip=%s redis_port=%s", redis_ip, redis_port);
+    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "ip", redis_ip))  { LOG_ERROR(CFG_LOG_MODULE, "redis_ip err"); return -1; }
+    if(-1 == get_config_vaule(CONFIG_PATH, "redis", "port", redis_port))  { LOG_ERROR(CFG_LOG_MODULE, "redis_port err"); return -1; }
+    LOG_INFO(CFG_LOG_MODULE, "redis_ip=%s redis_port=%s", redis_ip, redis_port);
     return 0;
 }
