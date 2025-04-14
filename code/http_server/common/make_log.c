@@ -29,7 +29,7 @@ int dumpmsg_to_file(char *proc_name, const char *filename,
         vsprintf(mesg, fmt, ap);                                                                       
         va_end(ap);                        
 
-        snprintf(buf, 4096, "<-- %04d-%02d-%02d %02d:%02d:%02d, %s[%d]--> %s\n",
+        snprintf(buf, 4096, "<-- %04d-%02d-%02d %02d:%02d:%02d, %s[%d] --> %s\n",
                                 now -> tm_year + 1900, now -> tm_mon + 1,                                         
                                 now -> tm_mday, now -> tm_hour, now -> tm_min, now -> tm_sec,
                                 funcname, line, mesg);                                     
