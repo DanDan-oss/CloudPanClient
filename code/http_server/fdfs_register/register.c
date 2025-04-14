@@ -10,6 +10,7 @@
 #include "common/deal_mysql.h"
 #include "common/cJSON.h"
 #include "common/configure.h"
+#include "common/cryptutil.h"
 #include <fcgi_stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,12 +112,19 @@ int user_register(char* reg_buf)
         //strftime() 函数根据区域设置格式化本地时间/日期，函数的功能将时间格式化，或者说格式化一个时间字符串
         strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", ptm);
 
-        // 插入注册信息
-        sprintf(sql_cmd, "insert into user (name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, pwd, tel, time_str ,email);
-        result=mysql_query(conn, sql_cmd);
-        if(result != 0) { LOG_ERROR(REG_LOG_MODULE, "%s 用户数据插入失败：%s", sql_cmd, mysql_error(conn)); result = -1;  break; }
+        // 密码设置成MD5值
+        char md5_pass[16]; // 二进制MD5
+        char hex_pass[33]; // 十六进制字符串
 
-        LOG_INFO(REG_LOG_MODULE, "%s 用户数据插入成功!!", sql_cmd);
+        MD5((unsigned char*)pwd, strlen(pwd), md5_pass);
+        md5_to_hex(md5_pass, hex_pass);
+
+        // 插入注册信息
+        sprintf(sql_cmd, "insert into user (name, nickname, password, phone, createtime, email) values ('%s', '%s', '%s', '%s', '%s', '%s')", user, nick_name, hex_pass, tel, time_str ,email);
+        result=mysql_query(conn, sql_cmd);
+        if(result != 0) { LOG_ERROR(REG_LOG_MODULE, "{%s}:{%s} User %s data failed to be stored in the database", sql_cmd, mysql_error(conn), user); result = -1;  break; }
+
+        LOG_INFO(REG_LOG_MODULE, "{%s}:User %s data successfully stored in the database", sql_cmd, user);
         result=0;
         break;
     } while (0);
