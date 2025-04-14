@@ -36,7 +36,7 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 	if (pTrackerServer == NULL)
 	{
 		printf("get tracker_get_connection fail\n");
-		LOG("fdfs_client", " get tracker_get_connection fail ");
+		LOG_ERROR("fdfs_client", " get tracker_get_connection fail ");
 		fdfs_client_destroy();
 		return errno != 0 ? errno : ECONNREFUSED;
 	}
@@ -48,7 +48,7 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 	                &storageServer, group_name, &store_path_index)) != 0)
 	{
 		fdfs_client_destroy();
-		LOG("fdfs_client", "tracker_query_storage fail, error no: %d, error info: %s", \
+		LOG_ERROR("fdfs_client", "tracker_query_storage fail, error no: %d, error info: %s", \
 			result, STRERROR(result));
 		return result;
 	}
@@ -59,11 +59,11 @@ int fdfs_upload_file(const char* conf_filename, const char* local_filename, char
 			NULL, 0, group_name, file_id);
 	if (result == 0)
 	{
-		LOG("fdfs_client", " %s", file_id);
+		LOG_INFO("fdfs_client", " %s", file_id);
 	}
 	else
 	{
-		LOG("fdfs_client", "upload file fail, error no: %d, error info: %s", result, STRERROR(result));
+		LOG_ERROR("fdfs_client", "upload file fail, error no: %d, error info: %s", result, STRERROR(result));
 	}
 
 	tracker_close_connection_ex(pTrackerServer, true);

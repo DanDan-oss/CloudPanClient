@@ -12,6 +12,7 @@ file(GLOB COMMON_SRC
     "${CMAKE_SOURCE_DIR}/../common/deal_mysql.c" 
     "${CMAKE_SOURCE_DIR}/../common/cJSON.c"
     "${CMAKE_SOURCE_DIR}/../common/configure.c"
+    "${CMAKE_SOURCE_DIR}/../common/cryptutil.c"
 )
 file(GLOB LOCAL_SRC "${CMAKE_SOURCE_DIR}/register.c")
 
@@ -25,4 +26,4 @@ add_executable(fdfs_register.exe ${COMMON_SRC} ${LOCAL_SRC})
 set_target_properties(fdfs_register.exe PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # 链接库
-target_link_libraries(fdfs_register.exe fcgi mysqlclient m)
+target_link_libraries(fdfs_register.exe fcgi mysqlclient m crypto)

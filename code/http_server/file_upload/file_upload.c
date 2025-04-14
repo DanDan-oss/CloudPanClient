@@ -108,7 +108,8 @@ int get_file_context(char* begin, char* end, int len, char* filename)
     p = (char*)strstr(begin, "\r\n") + strlen("\r\n");   // 指针跳转到http 请求头
     strncpy(boundary, begin, p-begin-strlen("\r\n"));
     len -= (p-begin);
-    LOG_REOUT_EX("fdfs_upload", "boundary: %s", boundary);
+    LOG_INFO("fdfs_upload", "boundary: %s", boundary);
+    printf("boundary: %s", boundary);
 
     begin = p;
     p = (char*)strstr(p, "\r\n") + + strlen("\r\n");      // 指针跳转到http 请求体
@@ -118,7 +119,8 @@ int get_file_context(char* begin, char* end, int len, char* filename)
     char* first_ptr = (char*)strstr(begin, "filename=") + strlen("filename=") +1;  // 跳到第一个"号
     char* last_ptr = strchr(first_ptr, '"');            // 跳到第二"号
     strncpy(filename, first_ptr, last_ptr-first_ptr);
-    LOG_REOUT_EX("fdfs_upload", "<br>filename: %s<br>", filename);
+    LOG_INFO("fdfs_upload", "<br>filename: %s<br>", filename);
+    printf("<br>filename: %s<br>", filename);
 
     // 读取 content-type
     begin = p;
@@ -150,7 +152,7 @@ int store_data(char* filename, char* fileid)
         conn = msql_conn("root", "root", "test");
         if(!conn)
         {
-            LOG("fdfs_upload", "mysql数据库连接失败!");
+            LOG_ERROR("fdfs_upload", "mysql数据库连接失败!");
             break;
         }
 
@@ -159,14 +161,14 @@ int store_data(char* filename, char* fileid)
         buffer= (char*)malloc(1024);
         if(!buffer)
         {
-            LOG("fdfs_upload", "mysql语句缓冲区申请失败!");
+            LOG_ERROR("fdfs_upload", "mysql语句缓冲区申请失败!");
             break;
         }
         sprintf(buffer, "insert into file (name, fileid) values ('%s', '%s')", filename, fileid);
-        LOG("fdfs_upload", "<br> sql: %s<br>!", buffer);
+        LOG_INFO("fdfs_upload", "<br> sql: %s<br>!", buffer);
         if(mysql_query(conn, buffer))
         {
-            LOG("upload_file", "mysql数据插入失败: %s", buffer);
+            LOG_ERROR("upload_file", "mysql数据插入失败: %s", buffer);
             break;
         }
         ret = 0;
