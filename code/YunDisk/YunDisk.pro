@@ -24,6 +24,8 @@ SOURCES += \
     login/registercontext.cpp \
     login/serverconfig.cpp \
     login/titlewg.cpp \
+    mainscene/mainscene.cpp \
+    mainscene/buttongroup.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -38,6 +40,8 @@ HEADERS += \
     login/registercontext.h \
     login/serverconfig.h \
     login/titlewg.h \
+    mainscene/mainscene.h \
+    mainscene/buttongroup.h \
     mainwindow.h
 
 # lrelease YunDisk_zh_CN.ts -qm YunDisk_zh_CN.qm

@@ -5,7 +5,6 @@
 #include "logincontext.h"
 #include "registercontext.h"
 #include "serverconfig.h"
-#include "common/loginfo.h"
 #include <QWidget>
 #include <QStackedWidget>
 
@@ -19,6 +18,8 @@ public:
     explicit Login (QWidget *parent = nullptr);
     ~Login();
     InfoContext& getInfoContext();
+    void showWindow();
+
 protected:
     void initScene();     // 初始化主界面,绘制界面初始化回调函数
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景
@@ -36,8 +37,6 @@ private:
     LoginContext* m_login_page = nullptr;
     RegisterContext* m_register_page = nullptr;
     ServerConfig* m_serverconf_page = nullptr;
-
-    InfoContext m_info;
 
 signals:
 };

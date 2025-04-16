@@ -1,5 +1,6 @@
 #include "common/global.h"
 #include "login.h"
+#include "mainwindow.h"
 #include <QLabel>
 #include <QMovie>
 #include <QPainter>
@@ -13,8 +14,7 @@
 Login::Login(QWidget *parent)
     : QWidget{parent}
 {
-    this->m_info.setConfPath(QString("./conf/Config.ini"));
-    this->m_info.readConfContext();
+
     this->initScene();
     //connect(this->m_title)
 }
@@ -36,7 +36,6 @@ void Login::initScene()
     int iHeight= MAIN_SCENE_WINDOW_H, iWidget=MAIN_SCENE_WINDOW_W;
 
     this->setFixedSize(iWidget, iHeight);
-    this->parentWidget()->setFixedSize(iWidget, iHeight);
     this->setWindowTitle(WINDOW_TITLE_TEXT);
     this->setWindowIcon(QIcon(WINDOW_ICON_PATH));
 
@@ -73,6 +72,12 @@ void Login::paintEvent(QPaintEvent* event)
 
     painter.drawPixmap(0, 0, iWidget,iHeight, pixmap);
     return QWidget::paintEvent(event);
+}
+
+void Login::showWindow()
+{
+    this->parentWidget()->setFixedSize(this->width(), this->height());
+    this->show();
 }
 
 void Login::showRegisterPage()
@@ -113,5 +118,9 @@ void Login::showMinWindow()
 
 InfoContext& Login::getInfoContext()
 {
-    return this->m_info;
+    InfoContext m_info;
+    MainWindow* window = dynamic_cast<MainWindow*>(this->parent());
+    if (!window)
+        return m_info;
+    return window->getInfoContext();
 }

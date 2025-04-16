@@ -1,5 +1,6 @@
 #include "logincontext.h"
 #include "login.h"
+#include "mainwindow.h"
 #include "common/loginfo.h"
 #include "common/global.h"
 #include "common/cryptutil.h"
@@ -133,8 +134,6 @@ void LoginContext::on_button_login_clicked()
         this->m_passtext.setFocus();
         return;
     }
-    if(!this->m_checkpass.isChecked())
-        return;
 
     login = dynamic_cast<Login*>(this->parent());
     if(!login)
@@ -143,10 +142,6 @@ void LoginContext::on_button_login_clicked()
         return;
     info.username = this->m_usertext.text();
     info.password = this->m_passtext.text();
-
-    // 登录信息写入配置文件cfg.json
-    login->getInfoContext().setLoginInfo(info);
-    login->getInfoContext().WriteConfContext();
 
     this->sendLoginMessage(info);
 
@@ -195,7 +190,7 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
         QStringList tmpList = this->getLoginStatus(json);
         if (tmpList.at(0) != "000" || 0 == tmpList.size())
         {
-            QMessageBox::warning(this, "登录失败", tmpList.at(0));
+            QMessageBox::warning(this, "登录失败", tmpList.at(1));
             reply->deleteLater(); //释放资源
             return;
         }
@@ -204,6 +199,20 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
         p->setLoginInfo(info.username, server.ip, QString::number(server.port), tmpList.at(1));
         qDebug() << p->getUser().toUtf8().data() << ", " << p->getIp() << ", " << p->getPort() << ", " << p->getToken();
 
+        MainWindow* window = dynamic_cast<MainWindow*>(login->parent());
+        if (!window)
+        {
+            QMessageBox::critical(this, "登录成功", "无法进入功能界面");
+            return;
+        }
+        if (this->m_checkpass.isChecked())
+        {
+            // 登录信息写入配置文件cfg.json
+            login->getInfoContext().setLoginInfo(info);
+            login->getInfoContext().WriteConfContext();
+        }
+
+        window->showMainWindow(1);
         reply->deleteLater(); //释放资源
     });
 
