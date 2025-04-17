@@ -33,8 +33,8 @@ Login::~Login()
 
 void Login::initScene()
 {
-    int iHeight= MAIN_SCENE_WINDOW_H, iWidget=MAIN_SCENE_WINDOW_W;
-
+    int iHeight= LOGIN_SCENE_WINDOW_H, iWidget= LOGIN_SCENE_WINDOW_W;
+    
     this->setFixedSize(iWidget, iHeight);
     this->setWindowTitle(WINDOW_TITLE_TEXT);
     this->setWindowIcon(QIcon(WINDOW_ICON_PATH));
@@ -44,7 +44,7 @@ void Login::initScene()
 
     // 设置当前窗口所有的字体
     this->setFont(QFont("微软雅黑", 16, QFont::Bold, false));
-    this->m_title_page = new TitleWg(QRect(0,0, MAIN_SCENE_WINDOW_W, iHeight/5), this); // title，占据上1/5的地方
+    this->m_title_page = new TitleWg(QRect(0,0, LOGIN_SCENE_WINDOW_W, iHeight/5), this); // title，占据上1/5的地方
     this->m_login_page = new LoginContext(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this); // 用户登录
     this->m_register_page = new RegisterContext(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this); // 注册
     this->m_serverconf_page = new ServerConfig(QRect(iWidget/8,iHeight/5, iWidget/4*3, iHeight/3*2), this);  // 服务器配置
@@ -64,7 +64,7 @@ void Login::initScene()
 
 void Login::paintEvent(QPaintEvent* event)
 {
-    int iHeight= MAIN_SCENE_WINDOW_H, iWidget=MAIN_SCENE_WINDOW_W;
+    int iHeight= LOGIN_SCENE_WINDOW_H, iWidget= LOGIN_SCENE_WINDOW_W;
 
     // 初始化主场景背景图
     QPainter painter(this);

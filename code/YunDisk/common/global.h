@@ -18,8 +18,13 @@
 #define IP_REG          "((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)"
 #define PORT_REG        "^[1-9]$|(^[1-9][0-9]$)|(^[1-9][0-9][0-9]$)|(^[1-9][0-9][0-9][0-9]$)|(^[1-6][0-5][0-5][0-3][0-5]$)"
 
-#define MAIN_SCENE_WINDOW_H 480     // 主窗口界面高
-#define MAIN_SCENE_WINDOW_W 600     // 主窗口界面宽
+#define LOGIN_SCENE_WINDOW_H 480     // 登录窗口界面高
+#define LOGIN_SCENE_WINDOW_W 600     // 登录窗口界面宽
+
+#define MAIN_SCENE_WINDOW_H 611     // 主窗口界面高
+#define MAIN_SCENE_WINDOW_W 755     // 主窗口界面宽
+
+
 #define WINDOW_TITLE_TEXT "YunDisk"
 #define WINDOW_ICON_PATH ":/images/favicon.ico"
 #define WINDOW_BACKUP_PATH ":/images/login2.jpg"

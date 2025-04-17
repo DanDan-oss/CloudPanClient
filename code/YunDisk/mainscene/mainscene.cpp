@@ -1,13 +1,12 @@
 #include "mainscene.h"
+#include "common/global.h"
 #include "common/cryptutil.h"
 #include "common/network_manager.h"
 #include "common/logininfoinstance.h"
 #include <QJsonArray>
 #include <QJsonObject>
-#include <QScreen>
+#include <QPainter>
 
-#define MAIN_SCENE_WINDOW_H 480     // Ö÷´°¿Ú½çÃæ¸ß
-#define MAIN_SCENE_WINDOW_W 600     // Ö÷´°¿Ú½çÃæ¿í
 
 QNetworkAccessManager& manager = NetworkManager::getNetManager();
 
@@ -27,9 +26,18 @@ void MainScene::initScene()
     int iHeight = MAIN_SCENE_WINDOW_H, iWidget = MAIN_SCENE_WINDOW_W;
 
     this->setFixedSize(iWidget, iHeight);
-    // È¥µô´´½¨µÄ±ß¿ò
     this->setWindowFlags(Qt::FramelessWindowHint | windowFlags());
+    // åŽ»æŽ‰åˆ›å»ºçš„è¾¹æ¡†
+    this->setFont(QFont("å¾®è½¯é›…é»‘", 16, QFont::Bold, false));
+    this->m_btngroup = new ButtonGroup(QRect(0, 0, MAIN_SCENE_WINDOW_W, 115), this);
 
+}
+
+void MainScene::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    QPixmap bk(":/images/title_bk3.jpg");
+    painter.drawPixmap(0, 0, this->width(), this->height(), bk);
 }
 
 void MainScene::showWindow()
@@ -37,4 +45,6 @@ void MainScene::showWindow()
     this->parentWidget()->setFixedSize(this->width(), this->height());
     this->show();
 }
+
+
 

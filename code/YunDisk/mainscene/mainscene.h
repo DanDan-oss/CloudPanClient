@@ -2,10 +2,11 @@
 #define MAINSCENE_H
 
 #include "common/loginfo.h"
+#include "buttongroup.h"
 #include <QWidget>
 
 
-// Ö÷³¡¾°===========================
+// ä¸»åœºæ™¯===========================
 class MainScene : public QWidget
 {
     Q_OBJECT
@@ -16,12 +17,13 @@ public:
     void showWindow();
 
 protected:
-    void initScene();     // ³õÊ¼»¯Ö÷½çÃæ,»æÖÆ½çÃæ³õÊ¼»¯»Øµ÷º¯Êı
+    void initScene();           // åˆå§‹åŒ–ä¸»ç•Œé¢,ç»˜åˆ¶ç•Œé¢åˆå§‹åŒ–å›è°ƒå‡½æ•°
+    virtual void paintEvent(QPaintEvent* event);    // ç»˜åˆ¶äº‹ä»¶,ç»˜åˆ¶èƒŒæ™¯
 
 private:
 
     InfoContext m_info;
-
+    ButtonGroup* m_btngroup;
 };
 
 #endif // MAINWINDOW_H
