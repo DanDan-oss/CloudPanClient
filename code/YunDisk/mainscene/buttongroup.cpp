@@ -3,11 +3,38 @@
 #include <QPainter>
 #include <QMovie>
 #include <QMouseEvent>
+#include <QToolButton>
 
 ButtonGroup::ButtonGroup(const QRect& rect, QWidget* parent)
-    : QWidget{ parent }
+    : QWidget{ parent }, m_currentBtn(nullptr)
 {
     this->initScene(rect);
+
+    this->m_currentBtn = &(this->m_myfile);
+    this->m_currentBtn->setStyleSheet("color:red");
+
+    // key:value == 按钮显示内容：
+    this->m_btns.insert(this->m_myfile.text(), &(this->m_myfile));
+    this->m_btns.insert(this->m_sharelist.text(), &(this->m_sharelist));
+    this->m_btns.insert(this->m_download.text(), &(this->m_download));
+    this->m_btns.insert(this->m_transform.text(), &(this->m_transform));
+    this->m_btns.insert(this->m_switch_user.text(), &(this->m_switch_user));
+
+    this->m_pages.insert(Page::MYFILE, this->m_myfile.text());
+    this->m_pages.insert(Page::SHARE, this->m_sharelist.text());
+    this->m_pages.insert(Page::TRANKING, this->m_download.text());
+    this->m_pages.insert(Page::TRANSFER, this->m_transform.text());
+    this->m_pages.insert(Page::SWITCHUSR, this->m_switch_user.text());
+
+    // 设置信号映射
+    QMap<QString, QToolButton*>::iterator it = this->m_btns.begin();
+    for (; it != this->m_btns.end(); ++it)
+    {
+        connect(it.value(), &QToolButton::clicked, [this, btn = it.value()]() {
+            this->slotButtonClick(btn->text()); // 直接调用槽函数
+        });
+    }
+
 }
 
 ButtonGroup::~ButtonGroup()
@@ -19,11 +46,12 @@ void ButtonGroup::initScene(const QRect& rect)
 {
     int iHeigiht = rect.height(), iWidget = rect.width();
     this->setGeometry(rect);
-    //this->setStyleSheet("color:rgb(255, 255, 255)");
 
-    this->setFont(QFont("华文琥珀", 12, QFont::Bold, false));
+    QFont font("华文琥珀", 12, QFont::Bold);
+    this->setFont(font);
 
     this->m_login_user.setText("unknow");
+    this->m_login_user.setFont(font);
     this->m_login_user.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_login_user.setParent(this);
     this->m_login_user.setIcon(QIcon(":/images/title_user.png"));
@@ -34,6 +62,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_login_user.show();
 
     this->m_myfile.setText("我的文件");
+    this->m_myfile.setFont(font);
     this->m_myfile.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_myfile.setParent(this);
     this->m_myfile.setIcon(QIcon(":/images/tile_file.png"));
@@ -44,6 +73,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_myfile.show();
 
     this->m_sharelist.setText("共享列表");
+    this->m_sharelist.setFont(font);
     this->m_sharelist.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_sharelist.setParent(this);
     this->m_sharelist.setIcon(QIcon(":/images/title_share.png"));
@@ -54,6 +84,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_sharelist.show();
 
     this->m_download.setText("下载榜");
+    this->m_download.setFont(font);
     this->m_download.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_download.setParent(this);
     this->m_download.setIcon(QIcon(":/images/tile_hot.png"));
@@ -64,6 +95,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_download.show();
 
     this->m_transform.setText("传输列表");
+    this->m_transform.setFont(font);
     this->m_transform.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_transform.setParent(this);
     this->m_transform.setIcon(QIcon(":/images/title_data.png"));
@@ -74,6 +106,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_transform.show();
 
     this->m_switch_user.setText("切换用户");
+    this->m_switch_user.setFont(font);
     this->m_switch_user.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->m_switch_user.setParent(this);
     this->m_switch_user.setIcon(QIcon(":/images/title_change.png"));
@@ -84,6 +117,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_switch_user.show();
 
     this->m_close.setParent(this);
+    this->m_close.setFont(font);
     this->m_close.setText("...");
     this->m_close.setIcon(QIcon(":/images/title_close.png"));
     this->m_close.setIconSize(QSize(30, 30));
@@ -93,6 +127,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_close.show();
 
     this->m_max.setParent(this);
+    this->m_max.setFont(font);
     this->m_max.setText("...");
     this->m_max.setIcon(QIcon(":/images/title_max.png"));
     this->m_max.setIconSize(QSize(30, 30));
@@ -102,6 +137,7 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_max.show();
 
     this->m_mix.setParent(this);
+    this->m_mix.setFont(font);
     this->m_mix.setText("...");
     this->m_mix.setIcon(QIcon(":/images/title_min.png"));
     this->m_mix.setIconSize(QSize(30, 30));
@@ -109,6 +145,36 @@ void ButtonGroup::initScene(const QRect& rect)
     this->m_mix.move(this->m_max.x() - this->m_max.width() -20,20);
     this->m_mix.setAutoRaise(true);     // 不会自动填充背景色
     this->m_mix.show();
+
+}
+
+void ButtonGroup::slotButtonClick(Page current)
+{
+    QString text = this->m_pages[current];
+    this->slotButtonClick(text);
+}
+
+void ButtonGroup::slotButtonClick(QString text)
+{
+    qDebug() << "按钮处理消息" << text;
+    QToolButton* btn = this->m_btns[text];
+    if (btn == this->m_currentBtn && btn != &(this->m_switch_user))
+        return;
+
+    this->m_currentBtn->setStyleSheet("color:black");
+    this->m_currentBtn = btn;
+    this->m_currentBtn->setStyleSheet("color:red");
+    // 发送信号
+    if (this->m_myfile.text() == text)
+        emit this->signalMyFile();
+    else if (this->m_sharelist.text() == text)
+        emit this->signalShareList();
+    else if (this->m_download.text() == text)
+        emit this->signalDownload();
+    else if (this->m_transform.text() == text)
+        emit this->signalTransfron();
+    else if (this->m_switch_user.text() == text)
+        emit this->signalSwitchUser();
 
 }
 

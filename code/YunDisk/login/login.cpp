@@ -12,7 +12,8 @@
 #include <QDebug>
 
 Login::Login(QWidget *parent)
-    : QWidget{parent}
+    : QWidget{parent}, m_login_page(nullptr), m_title_page(nullptr), 
+    m_register_page(nullptr), m_serverconf_page(nullptr)
 {
 
     this->initScene();

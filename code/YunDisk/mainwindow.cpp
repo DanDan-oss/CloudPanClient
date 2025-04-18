@@ -4,7 +4,7 @@
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent), login(nullptr), m_scene(nullptr)
 {
     this->setWindowTitle(WINDOW_TITLE_TEXT);
     this->setWindowIcon(QIcon(WINDOW_ICON_PATH));
@@ -21,8 +21,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete this->login;
-    this->login = nullptr;
+    if(this->login)
+        delete this->login;
+    if (this->m_scene)
+        delete this->m_scene;
 }
 
 void MainWindow::showMainWindow(int index)

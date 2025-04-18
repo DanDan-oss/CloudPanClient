@@ -11,14 +11,15 @@
 QNetworkAccessManager& manager = NetworkManager::getNetManager();
 
 MainScene::MainScene(QWidget* parent)
-    : QWidget{ parent }
+    : QWidget{ parent }, m_btngroup(nullptr)
 {
     this->initScene();
 }
 
 MainScene::~MainScene()
 {
-
+    if (this->m_btngroup)
+        delete this->m_btngroup;
 }
 
 void MainScene::initScene()

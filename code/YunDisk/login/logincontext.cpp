@@ -233,6 +233,7 @@ QStringList LoginContext::getLoginStatus(QByteArray json)
     {
         WinPrintA << "err = " << error.errorString();
         WinPrintA << "err = " << QString(json.data()).indexOf("404 Not Found");
+        list.append("001");
         if( QString(json.data()).indexOf("404 Not Found"))
             list.append("服务连接失败");
         else
@@ -243,6 +244,7 @@ QStringList LoginContext::getLoginStatus(QByteArray json)
     if (doc.isNull() || doc.isEmpty() || false == doc.isObject())
     {
         WinPrintA << "doc.isNull() || doc.isEmpty() || doc.isObject() == null";
+        list.append("001");
         list.append("解析服务器返回数据失败");
         return list;
     }
