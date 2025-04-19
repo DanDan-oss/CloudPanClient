@@ -26,6 +26,7 @@ SOURCES += \
     login/titlewg.cpp \
     mainscene/mainscene.cpp \
     mainscene/buttongroup.cpp \
+    mainscene/myfilewg.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -42,6 +43,7 @@ HEADERS += \
     login/titlewg.h \
     mainscene/mainscene.h \
     mainscene/buttongroup.h \
+    mainscene/myfilewg.h \
     mainwindow.h
 
 # lrelease YunDisk_zh_CN.ts -qm YunDisk_zh_CN.qm

@@ -26,14 +26,14 @@ public slots:
 	void slotButtonClick(QString text);
 
 signals:
-	void signalMyFile();			// 我的文件按钮点击消息
-	void signalShareList();		// 共享文件按钮点击消息
-	void signalDownload();		// 下载榜按钮点击消息
-	void signalTransfron();		// 传输列表按钮点击消息
-	void signalSwitchUser();		// 切换用户按钮点击消息
-	void signalCloseWindow();		// 关闭按钮点击消息
-	void signalMinWindow();		// 最小化按钮点击消息
-	void signalMaxWindow();		// 最大化按钮点击消息
+	void signalMyFile();				// 我的文件按钮点击消息
+	void signalShareList();				// 共享文件按钮点击消息
+	void signalDownload();				// 下载榜按钮点击消息
+	void signalTransfron();				// 传输列表按钮点击消息
+	void signalSwitchUser();			// 切换用户按钮点击消息
+	void signalCloseWindow();			// 关闭按钮点击消息
+	void signalMinWindow();				// 最小化按钮点击消息
+	void signalMaxWindow(bool flag);	// 最大化按钮点击消息
 
 private:
 	QToolButton m_login_user;	// 登录用户按钮

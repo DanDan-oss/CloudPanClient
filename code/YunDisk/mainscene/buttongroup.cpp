@@ -34,6 +34,15 @@ ButtonGroup::ButtonGroup(const QRect& rect, QWidget* parent)
             this->slotButtonClick(btn->text()); // 直接调用槽函数
         });
     }
+    connect(&this->m_close, &QToolButton::clicked, this, &ButtonGroup::signalCloseWindow);
+    connect(&this->m_mix, &QToolButton::clicked, this, &ButtonGroup::signalMinWindow);
+    connect(&this->m_max, &QToolButton::clicked, this, [this]()
+    {
+        static bool isMaximized= false;
+        this->m_max.setIcon(QIcon(isMaximized ? ":/images/title_max.png" : ":/images/title_normal.png"));
+        isMaximized = !isMaximized;  // 切换状态
+        emit this->signalMaxWindow(isMaximized);
+    });
 
 }
 

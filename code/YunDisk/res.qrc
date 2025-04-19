@@ -18,5 +18,6 @@
         <file>images/title_close.png</file>
         <file>images/title_max.png</file>
         <file>images/title_min.png</file>
+        <file>images/title_normal.png</file>
     </qresource>
 </RCC>
