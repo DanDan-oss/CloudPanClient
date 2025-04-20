@@ -7,14 +7,10 @@ class NetworkManager : public QObject
 {
     Q_OBJECT
 public:
-    static QNetworkAccessManager& getNetManager();    // 得到http通信类对象
-public:
-    static QStringList  m_typeList;
+    static QNetworkAccessManager& getNetManager();      // 得到http通信类对象
+    static QString getCode(QByteArray json);		    // 得到服务器回复的状态码， 返回值为 "000", 或 "001"
 
 private:
-    // 文件类型路径
-    static QString      m_typePath;
-    // 主要保存文件类型的后缀
     // http类
     static QNetworkAccessManager* m_netManager;
 };

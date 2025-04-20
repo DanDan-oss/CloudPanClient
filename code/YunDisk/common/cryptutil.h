@@ -24,7 +24,7 @@ public:
     static QByteArray aesEncryptBytes(const QByteArray &plainBytes, const QByteArray &keyBytes = DEFAULT_AES_KEY.toUtf8(), const QByteArray &ivBytes = DEFAULT_AES_IV.toUtf8());
     static QByteArray aesDecryptBytes(const QByteArray &cipherBytes, const QByteArray &keyBytes = DEFAULT_AES_KEY.toUtf8(), const QByteArray &ivBytes = DEFAULT_AES_IV.toUtf8());
 
-private:
+public:
     static QString DEFAULT_DES_KEY;
     static QString DEFAULT_AES_KEY;
     static QString DEFAULT_AES_IV;

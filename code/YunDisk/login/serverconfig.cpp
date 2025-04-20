@@ -54,19 +54,16 @@ void ServerConfig::initScene(const QRect &rect)
 
 void ServerConfig::initShowData()
 {
+    InfoContext* infoInstance = InfoContext::getInfoContext();
     this->m_server_address.setFocus();
-    Login* login = dynamic_cast<Login*>(this->parent());
-    if(!login)
-        login = dynamic_cast<Login*>(this->parent()->parent());
-    if(!login)
-        return;
-    const ServerInfo& server_info = login->getInfoContext().getServerInfo();
+    const ServerInfo& server_info = infoInstance->getServerInfo();
     this->m_server_address.setText(server_info.ip);
     this->m_server_port.setText(QString::number(server_info.port));
 }
 
 void ServerConfig::on_button_ok_clicked()
 {
+    InfoContext* infoInstance = InfoContext::getInfoContext();
     QString ip = this->m_server_address.text();
     QString port = this->m_server_port.text();
     Login* login = dynamic_cast<Login*>(this->parent());
@@ -88,8 +85,9 @@ void ServerConfig::on_button_ok_clicked()
         QMessageBox::warning(this, "警告", "您输入的端口格式不正确, 请重新输入!");
         return;
     }
-    login->getInfoContext().setServerInfo(ip, port.toInt());
-    login->getInfoContext().WriteConfContext();
+
+    infoInstance->setServerInfo(ip, port.toInt());
+    infoInstance->WriteConfContext();
     QMessageBox::information(this, "成功", "保存成功", QMessageBox::Yes);
     emit login->closeWindow();
 }

@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QToolButton>
-#include "common/loginfo.h"
+#include "common/InfoContext.h"
 
 // 服务器配置界面
 class ServerConfig  : public QWidget

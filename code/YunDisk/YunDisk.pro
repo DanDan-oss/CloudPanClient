@@ -15,29 +15,33 @@ INCLUDEPATH += "F:\Microsoft Visual Studio\OpenSSL-Win64\include"
 
 
 SOURCES += \
-    common/loginfo.cpp \
+    common/InfoContext.cpp \
     common/cryptutil.cpp \
     common/network_manager.cpp \
-    common/logininfoinstance.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
     login/serverconfig.cpp \
     login/titlewg.cpp \
+    mainscene/mainscene.cpp \
+    mainscene/buttongroup.cpp \
+    mainscene/myfilewg.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     common/global.h \
-    common/loginfo.h \
+    common/InfoContext.h \
     common/cryptutil.h \
     common/network_manager.h \
-    common/logininfoinstance.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \
     login/serverconfig.h \
     login/titlewg.h \
+    mainscene/mainscene.h \
+    mainscene/buttongroup.h \
+    mainscene/myfilewg.h \
     mainwindow.h
 
 # lrelease YunDisk_zh_CN.ts -qm YunDisk_zh_CN.qm

@@ -6,7 +6,7 @@
 #include <QToolButton>
 #include <QLineEdit>
 #include <QCheckBox>
-#include "common/loginfo.h"
+#include "common/InfoContext.h"
 
 // 登录界面
 class LoginContext  : public QWidget
