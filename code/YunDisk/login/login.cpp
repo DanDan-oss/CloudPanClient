@@ -116,12 +116,3 @@ void Login::showMinWindow()
     QMainWindow* window=(QMainWindow*)this->parent();
     window->showMinimized();
 }
-
-InfoContext& Login::getInfoContext()
-{
-    InfoContext m_info;
-    MainWindow* window = dynamic_cast<MainWindow*>(this->parent());
-    if (!window)
-        return m_info;
-    return window->getInfoContext();
-}

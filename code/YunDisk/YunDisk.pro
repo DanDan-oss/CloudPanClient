@@ -15,10 +15,9 @@ INCLUDEPATH += "F:\Microsoft Visual Studio\OpenSSL-Win64\include"
 
 
 SOURCES += \
-    common/loginfo.cpp \
+    common/InfoContext.cpp \
     common/cryptutil.cpp \
     common/network_manager.cpp \
-    common/logininfoinstance.cpp \
     login/login.cpp \
     login/logincontext.cpp \
     login/registercontext.cpp \
@@ -32,10 +31,9 @@ SOURCES += \
 
 HEADERS += \
     common/global.h \
-    common/loginfo.h \
+    common/InfoContext.h \
     common/cryptutil.h \
     common/network_manager.h \
-    common/logininfoinstance.h \
     login/login.h \
     login/logincontext.h \
     login/registercontext.h \

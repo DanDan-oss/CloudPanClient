@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "common/loginfo.h"
+#include "common/InfoContext.h"
 #include "login/login.h"
 #include "mainscene/mainscene.h"
 
@@ -13,8 +13,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    InfoContext& getInfoContext();
     // ÏÔÊ¾Ö÷´°¿Ú
     void showMainWindow(int index=0);
 
@@ -24,7 +22,6 @@ public:
 private:
     Login* login = nullptr;
     MainScene* m_scene = nullptr;
-    InfoContext m_info;
 
 };
 #endif // MAINWINDOW_H

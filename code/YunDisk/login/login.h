@@ -17,7 +17,6 @@ class Login  : public QWidget
 public:
     explicit Login (QWidget *parent = nullptr);
     ~Login();
-    InfoContext& getInfoContext();
     void showWindow();
 
 protected:

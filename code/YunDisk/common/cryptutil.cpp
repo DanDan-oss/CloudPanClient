@@ -4,9 +4,9 @@
 #include "openssl/md5.h"
 #include "openssl/sha.h"
 
-QString CryptUtil::DEFAULT_DES_KEY = "12345678";//block size 8
-QString CryptUtil::DEFAULT_AES_KEY = "1234567812345678";//block size 16
-QString CryptUtil::DEFAULT_AES_IV = "1234567812345678";//block size 16
+QString CryptUtil::DEFAULT_DES_KEY = "32141123";//block size 8
+QString CryptUtil::DEFAULT_AES_KEY = "abcdefg123456732";//block size 16
+QString CryptUtil::DEFAULT_AES_IV = "abcdefg123456732";//block size 16
 
 QString CryptUtil::md5Text(const QString &plaintext)
 {

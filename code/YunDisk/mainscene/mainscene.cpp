@@ -52,6 +52,8 @@ void MainScene::paintEvent(QPaintEvent* event)
 void MainScene::showWindow()
 {
     this->parentWidget()->setFixedSize(this->width(), this->height());
+    this->m_stacked_widget->setCurrentWidget(myfiles_page);
+    this->myfiles_page->refreshFiles();
     this->show();
 }
 
@@ -81,6 +83,8 @@ void MainScene::slotButtonGroupClick(int index)
     switch (index)
     {
     case 0:
+        this->m_stacked_widget->setCurrentWidget(this->myfiles_page);
+        this->myfiles_page->show();
         break;
     case 1:
         break;

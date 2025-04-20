@@ -173,7 +173,8 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
         login = dynamic_cast<Login*>(this->parent()->parent());
     if (!login)
         return false;
-    const ServerInfo& server = login->getInfoContext().getServerInfo();
+    InfoContext* infoInstance = InfoContext::getInfoContext();
+    const ServerInfo& server = infoInstance->getServerInfo();
 
     // 设置连接服务器要发送的url
     QNetworkRequest request;
@@ -207,8 +208,9 @@ bool RegisterContext::sendRegisterMessage(const RegisterInfo& info)
         {   // 注册成功
             QMessageBox::information(this, "注册成功", "注册成功，请登录");
             WinPrintA << "user " << info.username << " create success";
-            login->getInfoContext().setLoginInfo(info.username, info.firstpwd);
-            login->getInfoContext().WriteConfContext();
+
+            infoInstance->setLoginInfo(info.username, info.firstpwd);
+            infoInstance->WriteConfContext();
             emit login->closeWindow();
         }
         else if ("003" == recvCode)

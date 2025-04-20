@@ -1,7 +1,7 @@
 #ifndef MAINSCENE_H
 #define MAINSCENE_H
 
-#include "common/loginfo.h"
+#include "common/InfoContext.h"
 #include "buttongroup.h"
 #include "myfilewg.h"
 #include <QWidget>
@@ -28,7 +28,6 @@ public slots:
     // 按钮处理函数
     void slotButtonGroupClick(int index);
 private:
-    InfoContext m_info;
     ButtonGroup* m_btngroup;
     MyFileWg* myfiles_page;
     QStackedWidget* m_stacked_widget;

@@ -10,9 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(WINDOW_ICON_PATH));
     this->setWindowFlags(Qt::FramelessWindowHint);
 
-    this->m_info.setConfPath(QString("./conf/Config.ini"));
-    this->m_info.readConfContext();
-
     this->login = new Login(this);
     this->m_scene = new MainScene(this);
 
@@ -58,10 +55,5 @@ void MainWindow::moveToCenter(QWidget* tmp)
 
     //QScreen* desktop = QApplication::QScreen();
     //tmp->move((desktop->width() - tmp->width())/2, (desktop->height() - tmp->height()) / 2)
-}
-
-InfoContext& MainWindow::getInfoContext()
-{
-    return this->m_info;
 }
 

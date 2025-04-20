@@ -1,11 +1,10 @@
 #include "logincontext.h"
 #include "login.h"
 #include "mainwindow.h"
-#include "common/loginfo.h"
+#include "common/InfoContext.h"
 #include "common/global.h"
 #include "common/cryptutil.h"
 #include "common/network_manager.h"
-#include "common/logininfoinstance.h"
 #include <QRegularExpression>
 #include <QJsonObject>>
 #include <QJsonDocument>
@@ -95,7 +94,8 @@ void LoginContext::initShowData()
         login = dynamic_cast<Login*>(this->parent()->parent());
     if(!login)
         return;
-    const LoginInfo& login_info = login->getInfoContext().getLoginInfo();
+    InfoContext* infoInstance = InfoContext::getInfoContext();
+    const LoginInfo& login_info = infoInstance->getLoginInfo();
     if(!login_info.username.length() ||  !login_info.password.length() )
         return;
 
@@ -157,7 +157,8 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
         login = dynamic_cast<Login*>(this->parent()->parent());
     if (!login)
         return false;
-    const ServerInfo& server = login->getInfoContext().getServerInfo();
+    InfoContext* infoInstance = InfoContext::getInfoContext();
+    const ServerInfo& server = infoInstance->getServerInfo();
 
     // 设置连接服务器要发送的url
     QNetworkRequest request;
@@ -195,9 +196,8 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
             return;
         }
         WinPrintA << "登陆成功";
-        LoginInfoInstance* p = LoginInfoInstance::getInstance();
-        p->setLoginInfo(info.username, server.ip, QString::number(server.port), tmpList.at(1));
-        qDebug() << p->getUser().toUtf8().data() << ", " << p->getIp() << ", " << p->getPort() << ", " << p->getToken();
+        infoInstance->setLoginToken(tmpList.at(1));
+        qDebug() << infoInstance->getUser().toUtf8().data() << ", " << infoInstance->getIp() << ", " << infoInstance->getPort() << ", " << infoInstance->getToken();
 
         MainWindow* window = dynamic_cast<MainWindow*>(login->parent());
         if (!window)
@@ -208,15 +208,15 @@ bool  LoginContext::sendLoginMessage(const LoginInfo& info)
         if (this->m_checkpass.isChecked())
         {
             // 登录信息写入配置文件cfg.json
-            login->getInfoContext().setLoginInfo(info);
-            login->getInfoContext().WriteConfContext();
+            infoInstance->setLoginInfo(info.username, info.password);
+            infoInstance->WriteConfContext();
         }
 
         window->showMainWindow(1);
         reply->deleteLater(); //释放资源
     });
 
-
+    return true;
 }
 
 // 得到服务器回复的登陆状态， 状态码返回值为 "000", 或 "001"，还有登陆section
