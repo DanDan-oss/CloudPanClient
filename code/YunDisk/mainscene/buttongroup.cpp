@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QToolButton>
 
+
 ButtonGroup::ButtonGroup(const QRect& rect, QWidget* parent)
     : QWidget{ parent }, m_currentBtn(nullptr)
 {

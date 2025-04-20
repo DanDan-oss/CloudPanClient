@@ -19,6 +19,7 @@ public:
     void showWindow();
     void InitManagerSignals();      // 初始化处理信息
 
+
 protected:
     void initScene();           // 初始化主界面,绘制界面初始化回调函数
     virtual void paintEvent(QPaintEvent* event);    // 绘制事件,绘制背景

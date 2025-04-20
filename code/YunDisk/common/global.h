@@ -21,7 +21,7 @@
 #define LOGIN_SCENE_WINDOW_H 480     // 登录窗口界面高
 #define LOGIN_SCENE_WINDOW_W 600     // 登录窗口界面宽
 
-#define MAIN_SCENE_WINDOW_H 611     // 主窗口界面高
+#define MAIN_SCENE_WINDOW_H 621     // 主窗口界面高
 #define MAIN_SCENE_WINDOW_W 755     // 主窗口界面宽
 
 

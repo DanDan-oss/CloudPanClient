@@ -1,16 +1,10 @@
 #include "mainscene.h"
 #include "myfilewg.h"
-#include "common/global.h"
-#include "common/cryptutil.h"
-#include "common/network_manager.h"
-#include "common/logininfoinstance.h"
 #include "mainwindow.h"
-#include <QJsonArray>
-#include <QJsonObject>
+#include "common/global.h"
 #include <QPainter>
 #include <QStackedWidget>
 
-QNetworkAccessManager& manager = NetworkManager::getNetManager();
 
 MainScene::MainScene(QWidget* parent)
     : QWidget{ parent },
@@ -20,7 +14,6 @@ MainScene::MainScene(QWidget* parent)
 {
     this->initScene();
     this->InitManagerSignals();
-
 }
 
 MainScene::~MainScene()
@@ -32,16 +25,19 @@ MainScene::~MainScene()
 void MainScene::initScene()
 {
     int iHeight = MAIN_SCENE_WINDOW_H, iWidget = MAIN_SCENE_WINDOW_W;
+    int BtnHeight = 115;
 
     this->setFixedSize(iWidget, iHeight);
     this->setWindowFlags(Qt::FramelessWindowHint | windowFlags());
     // 去掉创建的边框
     this->setFont(QFont("微软雅黑", 16, QFont::Bold, false));
-    this->m_btngroup = new ButtonGroup(QRect(0, 0, MAIN_SCENE_WINDOW_W, 115), this);
+    this->m_btngroup = new ButtonGroup(QRect(0, 0, MAIN_SCENE_WINDOW_W, BtnHeight), this);
 
     this->m_stacked_widget = new QStackedWidget(this);
-    this->m_stacked_widget->setGeometry(QRect(0, this->m_btngroup->height(), MAIN_SCENE_WINDOW_W, MAIN_SCENE_WINDOW_W - this->m_btngroup->width()));
-    this->myfiles_page = new MyFileWg(QRect(), this->myfiles_page);
+    this->m_stacked_widget->setGeometry(QRect(0, BtnHeight, MAIN_SCENE_WINDOW_W, MAIN_SCENE_WINDOW_H - BtnHeight));
+    this->myfiles_page = new MyFileWg(QRect(0, 0, 755, MAIN_SCENE_WINDOW_H - BtnHeight), this);
+
+    this->m_stacked_widget->addWidget(this->myfiles_page);
     this->m_stacked_widget->setCurrentWidget(myfiles_page);
 
 }
@@ -98,6 +94,7 @@ void MainScene::slotButtonGroupClick(int index)
         break;
     }
 }
+
 
 
 
