@@ -84,3 +84,10 @@ int get_redis_info(char *redis_ip, char *redis_port)
     LOG_INFO(CFG_LOG_MODULE, "redis_ip=%s redis_port=%s", redis_ip, redis_port);
     return 0;
 }
+
+int get_dfs_cli_path(char *fdfs_cli_conf_path)
+{
+    if(-1 == get_config_vaule(CONFIG_PATH, "dfs_path", "client", fdfs_cli_conf_path))  { LOG_ERROR(CFG_LOG_MODULE, "dfs_client_conf path err"); return -1; }
+    LOG_INFO(CFG_LOG_MODULE, "dfs_client_conf path=%s", fdfs_cli_conf_path);
+    return 0;
+}

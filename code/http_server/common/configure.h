@@ -23,4 +23,7 @@ extern int get_mysql_info(char *mysql_user, char *mysql_passwd, char *mysql_db);
 
 // 获取redis IP、端口
 extern int get_redis_info(char *redis_ip, char *redis_port);
+
+// 获取fdfs client.conf 路径
+extern int get_dfs_cli_path(char *fdfs_cli_conf_path);
 #endif

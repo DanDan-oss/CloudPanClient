@@ -4,6 +4,23 @@
         "fdfs_api.h": "c",
         "make_log.h": "c",
         "file_upload.h": "c",
-        "deal_mysql.h": "c"
+        "deal_mysql.h": "c",
+        "stdlib.h": "c",
+        "fcgi_stdio.h": "c",
+        "type_traits": "c",
+        "des.h": "c",
+        "stdio.h": "c",
+        "redis_op.h": "c",
+        "configure.h": "c",
+        "cryptutil.h": "c",
+        "ctype.h": "c",
+        "plugin_auth_common.h": "c",
+        "logger.h": "c",
+        "util_cgi.h": "c",
+        "fcntl.h": "c",
+        "types.h": "c",
+        "wait.h": "c",
+        "unistd.h": "c",
+        "string.h": "c"
     }
 }
