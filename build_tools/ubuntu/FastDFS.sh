@@ -1,7 +1,10 @@
-#!/usr/local/bin
+#!/bin/bash
 # 参考资料 https://github.com/happyfish100/fastdfs/blob/master/INSTALL
-set +eux
-CODE_PATH="/home/build_tools/fastdfs"
+set -eux
+set -o pipefail
+current_dir=$(pwd)
+tool_dir=/opt/buildtools
+install_dir=${tool_dir}/FastDFS
 
 current_ip=`ifconfig  | grep "inet " | grep -v "127.0.0.1" | awk '{print $2}'`
 tracker_ip_address=${current_ip}
@@ -13,21 +16,21 @@ storage_log_path="/home/FastDFS/storage"
 client_log_path="/home/FastDFS/client"
 storage_path0="/home/FastDFS/storage/storage_path0"
 
-[ -d ${CODE_PATH} ] && rm -rf ${CODE_PATH}
-mkdir -p ${CODE_PATH}
-cd ${CODE_PATH}
+[ -d ${install_dir} ] && rm -rf ${install_dir}
+mkdir -p ${install_dir}
+cd ${install_dir}
 
 git clone https://github.com/happyfish100/libfastcommon.git
 git clone https://github.com/happyfish100/libserverframe.git
 git clone https://github.com/happyfish100/fastdfs.git
 
-cd ${CODE_PATH}/libfastcommon; git checkout V1.0.72
-bash make.sh clean && bash /make.sh && bash make.sh install
-
-cd ${CODE_PATH}/libserverframe; git config --global --add safe.directory ${CODE_PATH}/libserverframe; git checkout V1.2.1
+cd ${install_dir}/libfastcommon; git checkout V1.0.72
 bash make.sh clean && bash make.sh && bash make.sh install
 
-cd ${CODE_PATH}/fastdfs; git config --global --add safe.directory ${CODE_PATH}/fastdfs; git checkout V6.11.0
+cd ${install_dir}/libserverframe; git config --global --add safe.directory ${install_dir}/libserverframe; git checkout V1.2.1
+bash make.sh clean && bash make.sh && bash make.sh install
+
+cd ${install_dir}/fastdfs; git config --global --add safe.directory ${install_dir}/fastdfs; git checkout V6.11.0
 bash make.sh clean && bash make.sh && bash make.sh install 
 bash setup.sh /etc/fdfs
 
